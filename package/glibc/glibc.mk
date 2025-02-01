@@ -64,7 +64,11 @@ GLIBC_CONF_ENV = \
 # Override the default library locations of /lib64/<abi> and
 # /usr/lib64/<abi>/ for RISC-V.
 ifeq ($(BR2_riscv),y)
+ifeq ($(BR2_RISCV_64),y)
 GLIBC_CONF_ENV += libc_cv_slibdir=/lib64 libc_cv_rtlddir=/lib
+else
+GLIBC_CONF_ENV += libc_cv_slibdir=/lib32 libc_cv_rtlddir=/lib
+endif
 endif
 
 # glibc requires make >= 4.0 since 2.28 release.
