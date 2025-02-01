@@ -112,8 +112,8 @@ define GLIBC_CONFIGURE_CMDS
 		--enable-shared \
 		$(if $(BR2_x86_64),--enable-lock-elision) \
 		--with-pkgversion="Buildroot" \
-		--without-cvs \
 		--disable-profile \
+		--disable-werror \
 		--without-gd \
 		--enable-obsolete-rpc \
 		--enable-kernel=$(call qstrip,$(BR2_TOOLCHAIN_HEADERS_AT_LEAST)) \
