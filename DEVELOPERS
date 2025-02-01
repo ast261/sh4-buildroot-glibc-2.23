@@ -70,6 +70,7 @@ F:	package/odhcp6c/
 N:	Alexander Dahl <post@lespocky.de>
 F:	package/fastd/
 F:	package/libuecc/
+F:	package/siproxd/
 F:	package/putty/
 
 N:	Alexander Egorenkov <egorenar-dev@posteo.net>
@@ -239,6 +240,7 @@ F:	package/python*
 F:	package/snmpclitools/
 F:	package/spdlog/
 F:	package/uftp/
+F:	package/uftrace/
 F:	package/uvw/
 F:	package/zeromq/
 
@@ -261,6 +263,7 @@ F:	package/python-canopen/
 N:	Bartosz Bilas <b.bilas@grinn-global.com>
 F:	board/stmicroelectronics/stm32mp157a-dk1/
 F:	configs/stm32mp157a_dk1_defconfig
+F:	package/log4qt/
 F:	package/python-esptool/
 F:	package/python-pyaes/
 F:	package/ttyd/
@@ -309,6 +312,7 @@ F:	package/apache/
 F:	package/apr/
 F:	package/apr-util/
 F:	package/bcg729/
+F:	package/bitcoin/
 F:	package/bluez-tools/
 F:	package/boinc/
 F:	package/clamav/
@@ -331,8 +335,12 @@ F:	package/gkrellm/
 F:	package/gli/
 F:	package/glmark2/
 F:	package/gpsd/
+F:	package/gptfdisk/
 F:	package/hdparm/
 F:	package/inih/
+F:	package/intel-gmmlib/
+F:	package/intel-mediadriver/
+F:	package/intel-mediasdk/
 F:	package/jsoncpp/
 F:	package/kodi*
 F:	package/lame/
@@ -468,7 +476,7 @@ N:	Bogdan Radulescu <bogdan@nimblex.net>
 F:	package/iftop/
 F:	package/ncdu/
 
-N:	Brandon Maier <brandon.maier@rockwellcollins.com>
+N:	Brandon Maier <brandon.maier@collins.com>
 F:	package/vmtouch/
 
 N:	Brock Williams <brock@cottonwoodcomputer.com>
@@ -487,16 +495,6 @@ F:	package/libsvg-cairo/
 N:	Cédric Chépied <cedric.chepied@gmail.com>
 F:	package/znc/
 
-N:	Chakra Divi <chakra@openedev.com>
-F:	board/friendlyarm/nanopi-m1
-F:	board/friendlyarm/nanopi-m1-plus
-F:	board/olimex/a13_olinuxino
-F:	board/orangepi/orangepi-plus
-F:	configs/friendlyarm_nanopi_m1_defconfig
-F:	configs/friendlyarm_nanopi_m1_plus_defconfig
-F:	configs/olimex_a13_olinuxino_defconfig
-F:	configs/orangepi_plus_defconfig
-
 N:	Chris Packham <judge.packham@gmail.com>
 F:	package/coremark/
 F:	package/coremark-pro/
@@ -509,13 +507,10 @@ N:	Christian Kellermann <christian.kellermann@solectrix.de>
 F:	package/python-pylibftdi/
 
 N:	Christian Stewart <christian@paral.in>
-F:	linux/linux-ext-aufs.mk
-F:	package/aufs/
-F:	package/aufs-util/
 F:	package/batman-adv/
+F:	package/containerd/
 F:	package/delve/
 F:	package/docker-cli/
-F:	package/docker-containerd/
 F:	package/docker-engine/
 F:	package/docker-proxy/
 F:	package/fuse-overlayfs/
@@ -572,7 +567,7 @@ F:	package/perl-sys-mmap/
 F:	package/perl-time-parsedate/
 F:	package/perl-x10/
 
-N:	Clayton Shotwell <clayton.shotwell@rockwellcollins.com>
+N:	Clayton Shotwell <clayton.shotwell@collins.com>
 F:	package/audit/
 F:	package/checkpolicy/
 F:	package/cpio/
@@ -674,6 +669,20 @@ F:	package/libstrophe/
 N:	Derrick Lyndon Pallas <derrick@meter.com>
 F:	package/ipcalc/
 
+N:	Dick Olsson <hi@senzilla.io>
+F:	package/bearssl/
+F:	package/bitcoin/
+F:	package/execline/
+F:	package/mdevd/
+F:	package/s6-dns/
+F:	package/s6-linux-init/
+F:	package/s6-linux-utils/
+F:	package/s6-networking/
+F:	package/s6-portable-utils/
+F:	package/s6-rc/
+F:	package/s6/
+F:	package/skalibs/
+
 N:	Dimitrios Siganos <dimitris@siganos.org>
 F:	package/wireless-regdb/
 
@@ -688,6 +697,11 @@ F:	package/unscd/
 
 N:	Dushara Jayasinghe <nidujay@gmail.com>
 F:	package/prosody/
+
+N:	Edgar Bonet <bonet@grenoble.cnrs.fr>
+F:	board/acmesystems/acqua-a5/
+F:	configs/acmesystems_acqua_a5_256mb_defconfig
+F:	configs/acmesystems_acqua_a5_512mb_defconfig
 
 N:	Eloi Bail <eloi.bail@savoirfairelinux.com>
 F:	package/bayer2rgb-neon/
@@ -921,6 +935,7 @@ F:	package/copas/
 F:	package/coxpcall/
 F:	package/dado/
 F:	package/ficl/
+F:	package/janet/
 F:	package/libtomcrypt/
 F:	package/libtommath/
 F:	package/libwpe/
@@ -1055,6 +1070,7 @@ F:	package/python-wtforms/
 
 N:	Guillaume William Brs <guillaume.bressaix@gmail.com>
 F:	package/libnids/
+F:	package/libxcrypt/
 F:	package/liquid-dsp/
 F:	package/pixiewps/
 F:	package/python-pybind/
@@ -1122,6 +1138,7 @@ F:	package/exempi/
 
 N:	Ismael Luceno <ismael@iodev.co.uk>
 F:	package/axel/
+F:	package/mawk/
 
 N:	Jagan Teki <jagan@amarulasolutions.com>
 F:	board/amarula/
@@ -1204,7 +1221,7 @@ F:	package/python-sockjs/
 F:	package/python-terminaltables/
 F:	package/python-yarl/
 
-N:	James Knight <james.knight@rockwellcollins.com>
+N:	James Knight <james.knight@collins.com>
 F:	package/atkmm/
 F:	package/cairomm/
 F:	package/google-material-design-icons/
@@ -1283,6 +1300,7 @@ F:	board/globalscale/espressobin/
 F:	package/mg/
 F:	package/netcalc/
 F:	package/ssdp-responder/
+F:	package/sysklogd/
 
 N:	Joao Pinto <jpinto@synopsys.com>
 F:	board/synopsys/vdk/
@@ -1379,6 +1397,10 @@ F:	package/libnet/
 F:	package/libuio/
 F:	package/netsniff-ng/
 F:	package/rabbitmq-c/
+
+N:	José Luis Salvador Rufo <salvador.joseluis@gmail.com>
+F:	package/zfs/
+F:	support/testing/tests/package/test_zfs.py
 
 N:	Joseph Kogut <joseph.kogut@gmail.com>
 F:	package/at-spi2-atk/
@@ -1692,7 +1714,7 @@ F:	board/technologic/ts4900/
 F:	configs/ts4900_defconfig
 F:	package/ts4900-fpga/
 
-N:	Matt Weber <matthew.weber@rockwellcollins.com>
+N:	Matt Weber <matthew.weber@collins.com>
 F:	board/freescale/p*
 F:	board/freescale/t*
 F:	board/qemu/ppc64-e5500/
@@ -1764,6 +1786,7 @@ F:	package/python-filelock/
 F:	package/python-flask-cors/
 F:	package/python-iptables/
 F:	package/python-ipy/
+F:	package/python-iwlib/
 F:	package/python-posix-ipc/
 F:	package/python-pycairo/
 F:	package/python-pypcap/
@@ -1815,6 +1838,8 @@ N:	Max Filippov <jcmvbkbc@gmail.com>
 F:	arch/Config.in.xtensa
 
 N:	Maxim Kochetkov <fido_max@inbox.ru>
+F:	package/postgis/
+F:	package/protozero/
 F:	package/timescaledb/
 
 N:	Maxime Hadjinlian <maxime.hadjinlian@gmail.com>
@@ -1943,7 +1968,7 @@ F:	package/php-xdebug/
 N:	Nicolas Cavallari <nicolas.cavallari@green-communications.fr>
 F:	package/libgit2/
 
-N:	Nicolas Serafini <nicolas.serafini@sensefly.com>
+N:	Nicolas Serafini <nicolas.serafini@ik.me>
 F:	package/exiv2/
 F:	package/ofono/
 
@@ -2103,6 +2128,7 @@ F:	package/libuev/
 F:	package/log4cplus/
 F:	package/postgresql/
 F:	package/python-colorzero/
+F:	package/python-flask-wtf/
 F:	package/python-gpiozero/
 F:	package/qt5/
 F:	package/quotatool/
@@ -2123,6 +2149,7 @@ N:	Petr Vorel <petr.vorel@gmail.com>
 F:	package/ima-evm-utils/
 F:	package/iproute2/
 F:	package/iputils/
+F:	package/libqrtr-glib/
 F:	package/libtirpc/
 F:	package/linux-backports/
 F:	package/ltp-testsuite/
@@ -2305,10 +2332,12 @@ F:	toolchain/
 N:	Roman Gorbenkov <roman.gorbenkov@ens2m.org>
 F:	package/davfs2/
 
-N:	Ryan Barnett <ryan.barnett@rockwellcollins.com>
+N:	Ryan Barnett <ryan.barnett@collins.com>
 F:	package/atftp/
 F:	package/c-periphery/
 F:	package/miraclecast/
+F:	package/opkg/
+F:	package/opkg-utils/
 F:	package/python-pysnmp/
 F:	package/python-pysnmp-mibs/
 F:	package/python-tornado/
@@ -2340,7 +2369,7 @@ F:	support/misc/toolchainfile.cmake.in
 N:	Sam Voss <sam.voss@gmail.com>
 F:	package/ripgrep/
 
-N:	Santosh Multhalli <santosh.multhalli@rockwellcollins.com>
+N:	Santosh Multhalli <santosh.multhalli@collins.com>
 F:	package/valijson/
 
 N:	Sébastien Szymanski <sebastien.szymanski@armadeus.com>
@@ -2451,7 +2480,9 @@ F:	package/mtdev/
 
 N:	Stephane Viau <stephane.viau@oss.nxp.com>
 F:	board/freescale/imx8mnevk/
+F:	board/freescale/imx8mpevk/
 F:	configs/freescale_imx8mnevk_defconfig
+F:	configs/freescale_imx8mpevk_defconfig
 
 N:	Steve Calfee <stevecalfee@gmail.com>
 F:	package/python-pymysql/
@@ -2567,10 +2598,14 @@ F:	package/xorcurses/
 
 N:	Thomas Petazzoni <thomas.petazzoni@bootlin.com>
 F:	arch/Config.in.arm
+F:	board/beaglev/
 F:	board/stmicroelectronics/stm32mp157c-dk2/
+F:	boot/beaglev-ddrinit/
+F:	boot/beaglev-secondboot/
 F:	boot/boot-wrapper-aarch64/
 F:	boot/grub2/
 F:	boot/gummiboot/
+F:	configs/beaglev_defconfig
 F:	configs/stm32mp157c_dk2_defconfig
 F:	package/android-tools/
 F:	package/b43-firmware/
@@ -2592,6 +2627,7 @@ F:	package/heirloom-mailx/
 F:	package/hiawatha/
 F:	package/igh-ethercat/
 F:	package/intltool/
+F:	package/jh71xx-tools/
 F:	package/libcap/
 F:	package/libffi/
 F:	package/libsha1/
@@ -2614,6 +2650,7 @@ F:	package/python3/
 F:	package/python-mad/
 F:	package/python-serial/
 F:	package/qextserialport/
+F:	package/riscv64-elf-toolchain/
 F:	package/rpcbind/
 F:	package/rt-tests/
 F:	package/rtc-tools/
