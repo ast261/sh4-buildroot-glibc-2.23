@@ -1,3 +1,24 @@
+This is a special Buildroot version for the Renesas SuperH (sh) architecture.
+It can currently be used under the following conditions:
+
+- target architecture: SuperH
+- target architecture variant: sh4 little-endian
+- glibc: 2.23
+
+Branch "idl4k-toolchain" contains the sh4 toolchain based on:
+- kernel-header: 2.6.32.42
+- glibc: 2.23
+- binutils: 2.35.2
+- gcc 10.3.0
+- gdb 11.1
+
+Because of a hang in the old glibc version, the toolchain must be build with make < 4.4.
+This toolchain has been tested on
+- platform: idl4k (Inverto Digital Labs)
+- cpu type: STx7108
+
+---------------------------------------------------------------------------
+
 Buildroot is a simple, efficient and easy-to-use tool to generate embedded
 Linux systems through cross-compilation.
 
