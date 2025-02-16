@@ -1,0 +1,27 @@
+From 83dc314bea4d701e3e5fa048314dfb02f7ef769c Mon Sep 17 00:00:00 2001
+From: Andreas Oberritter <obi@linuxtv.org>
+Date: Mon, 8 Aug 2011 11:54:35 -0300
+Subject: [PATCH] [media] DVB: Add SYS_TURBO for north american turbo code FEC
+
+Signed-off-by: Andreas Oberritter <obi@linuxtv.org>
+Signed-off-by: Mauro Carvalho Chehab <mchehab@redhat.com>
+---
+ Documentation/DocBook/media/dvb/dvbproperty.xml | 1 +
+ include/linux/dvb/frontend.h                    | 1 +
+ 2 files changed, 2 insertions(+)
+
+diff --git a/include/linux/dvb/frontend.h b/include/linux/dvb/frontend.h
+index 36a3ed63f571..1b1094c35e4f 100644
+--- a/include/linux/dvb/frontend.h
++++ b/include/linux/dvb/frontend.h
+@@ -349,6 +349,7 @@ typedef enum fe_delivery_system {
+ 	SYS_CMMB,
+ 	SYS_DAB,
+ 	SYS_DVBT2,
++	SYS_TURBO,
+ } fe_delivery_system_t;
+ 
+ struct dtv_cmds_h {
+-- 
+2.48.1
+

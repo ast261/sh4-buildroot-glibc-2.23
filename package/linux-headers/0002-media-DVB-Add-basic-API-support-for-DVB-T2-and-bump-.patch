@@ -1,0 +1,79 @@
+From 94d56ffa0a9bf11dfb602dae9223089e09a8e050 Mon Sep 17 00:00:00 2001
+From: Andreas Oberritter <obi@linuxtv.org>
+Date: Thu, 12 May 2011 18:11:06 -0300
+Subject: [PATCH] [media] DVB: Add basic API support for DVB-T2 and bump minor
+ version
+
+[steve@stevekerrison.com: Remove private definitions from cxd2820r that existed before API was defined]
+Signed-off-by: Andreas Oberritter <obi@linuxtv.org>
+Signed-off-by: Steve Kerrison <steve@stevekerrison.com>
+Signed-off-by: Mauro Carvalho Chehab <mchehab@redhat.com>
+---
+ drivers/media/dvb/dvb-core/dvb_frontend.c   | 13 +++++++++----
+ drivers/media/dvb/dvb-core/dvb_frontend.h   |  3 +++
+ drivers/media/dvb/frontends/cxd2820r_priv.h | 12 ------------
+ include/linux/dvb/frontend.h                | 20 ++++++++++++++++----
+ include/linux/dvb/version.h                 |  2 +-
+ 5 files changed, 29 insertions(+), 21 deletions(-)
+
+diff --git a/include/linux/dvb/frontend.h b/include/linux/dvb/frontend.h
+index 493a2bf85f62..36a3ed63f571 100644
+--- a/include/linux/dvb/frontend.h
++++ b/include/linux/dvb/frontend.h
+@@ -175,14 +175,20 @@ typedef enum fe_transmit_mode {
+ 	TRANSMISSION_MODE_2K,
+ 	TRANSMISSION_MODE_8K,
+ 	TRANSMISSION_MODE_AUTO,
+-	TRANSMISSION_MODE_4K
++	TRANSMISSION_MODE_4K,
++	TRANSMISSION_MODE_1K,
++	TRANSMISSION_MODE_16K,
++	TRANSMISSION_MODE_32K,
+ } fe_transmit_mode_t;
+ 
+ typedef enum fe_bandwidth {
+ 	BANDWIDTH_8_MHZ,
+ 	BANDWIDTH_7_MHZ,
+ 	BANDWIDTH_6_MHZ,
+-	BANDWIDTH_AUTO
++	BANDWIDTH_AUTO,
++	BANDWIDTH_5_MHZ,
++	BANDWIDTH_10_MHZ,
++	BANDWIDTH_1_712_MHZ,
+ } fe_bandwidth_t;
+ 
+ 
+@@ -191,7 +197,10 @@ typedef enum fe_guard_interval {
+ 	GUARD_INTERVAL_1_16,
+ 	GUARD_INTERVAL_1_8,
+ 	GUARD_INTERVAL_1_4,
+-	GUARD_INTERVAL_AUTO
++	GUARD_INTERVAL_AUTO,
++	GUARD_INTERVAL_1_128,
++	GUARD_INTERVAL_19_128,
++	GUARD_INTERVAL_19_256,
+ } fe_guard_interval_t;
+ 
+ 
+@@ -305,7 +314,9 @@ struct dvb_frontend_event {
+ 
+ #define DTV_ISDBS_TS_ID		42
+ 
+-#define DTV_MAX_COMMAND				DTV_ISDBS_TS_ID
++#define DTV_DVBT2_PLP_ID	43
++
++#define DTV_MAX_COMMAND				DTV_DVBT2_PLP_ID
+ 
+ typedef enum fe_pilot {
+ 	PILOT_ON,
+@@ -337,6 +348,7 @@ typedef enum fe_delivery_system {
+ 	SYS_DMBTH,
+ 	SYS_CMMB,
+ 	SYS_DAB,
++	SYS_DVBT2,
+ } fe_delivery_system_t;
+ 
+ struct dtv_cmds_h {
+-- 
+2.48.1
+

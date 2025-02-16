@@ -1,0 +1,59 @@
+From 0d27bbfe81cb087748dc1511683bd3e7335a7da5 Mon Sep 17 00:00:00 2001
+From: Mauro Carvalho Chehab <mchehab@redhat.com>
+Date: Mon, 13 Aug 2012 17:03:12 -0300
+Subject: [PATCH] [media] frontend.h, Docbook: Improve status documentation
+
+No functional changes. It just improves the description of the frontend
+status, using Documentation/kernel-doc-nano-HOWTO.txt for the status
+enumeration, and a table inside the DocBook.
+
+Signed-off-by: Mauro Carvalho Chehab <mchehab@redhat.com>
+---
+ Documentation/DocBook/media/dvb/frontend.xml | 48 +++++++++++++++-----
+ include/linux/dvb/frontend.h                 | 29 ++++++++----
+ 2 files changed, 57 insertions(+), 20 deletions(-)
+
+diff --git a/include/linux/dvb/frontend.h b/include/linux/dvb/frontend.h
+index c92b4d64e013..bb51edfc72a2 100644
+--- a/include/linux/dvb/frontend.h
++++ b/include/linux/dvb/frontend.h
+@@ -121,16 +121,27 @@ typedef enum fe_sec_mini_cmd {
+ } fe_sec_mini_cmd_t;
+ 
+ 
++/**
++ * enum fe_status - enumerates the possible frontend status
++ * @FE_HAS_SIGNAL:	found something above the noise level
++ * @FE_HAS_CARRIER:	found a DVB signal
++ * @FE_HAS_VITERBI:	FEC is stable
++ * @FE_HAS_SYNC:	found sync bytes
++ * @FE_HAS_LOCK:	everything's working
++ * @FE_TIMEDOUT:	no lock within the last ~2 seconds
++ * @FE_REINIT:		frontend was reinitialized, application is recommended
++ *			to reset DiSEqC, tone and parameters
++ */
++
+ typedef enum fe_status {
+-	FE_HAS_SIGNAL	= 0x01,   /* found something above the noise level */
+-	FE_HAS_CARRIER	= 0x02,   /* found a DVB signal  */
+-	FE_HAS_VITERBI	= 0x04,   /* FEC is stable  */
+-	FE_HAS_SYNC	= 0x08,   /* found sync bytes  */
+-	FE_HAS_LOCK	= 0x10,   /* everything's working... */
+-	FE_TIMEDOUT	= 0x20,   /* no lock within the last ~2 seconds */
+-	FE_REINIT	= 0x40    /* frontend was reinitialized,  */
+-} fe_status_t;			  /* application is recommended to reset */
+-				  /* DiSEqC, tone and parameters */
++	FE_HAS_SIGNAL		= 0x01,
++	FE_HAS_CARRIER		= 0x02,
++	FE_HAS_VITERBI		= 0x04,
++	FE_HAS_SYNC		= 0x08,
++	FE_HAS_LOCK		= 0x10,
++	FE_TIMEDOUT		= 0x20,
++	FE_REINIT		= 0x40,
++} fe_status_t;
+ 
+ typedef enum fe_spectral_inversion {
+ 	INVERSION_OFF,
+-- 
+2.48.1
+

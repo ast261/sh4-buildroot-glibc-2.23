@@ -1,0 +1,52 @@
+From ba2780c796badfc3741c7cb499a575ca49f17e6d Mon Sep 17 00:00:00 2001
+From: Manu Abraham <abraham.manu@gmail.com>
+Date: Sun, 13 Nov 2011 18:47:44 -0300
+Subject: [PATCH] [media] DVB: Query DVB frontend delivery capabilities
+
+ Currently, for any multi-standard frontend it is assumed that it just
+ has a single standard capability. This is fine in some cases, but
+ makes things hard when there are incompatible standards in conjuction.
+ Eg: DVB-S can be seen as a subset of DVB-S2, but the same doesn't hold
+ the same for DSS. This is not specific to any driver as it is, but a
+ generic issue. This was handled correctly in the multiproto tree,
+ while such functionality is missing from the v5 API update.
+
+ http://www.linuxtv.org/pipermail/vdr/2008-November/018417.html
+
+ Later on a FE_CAN_2G_MODULATION was added as a hack to workaround this
+ issue in the v5 API, but that hack is incapable of addressing the
+ issue, as it can be used to simply distinguish between DVB-S and
+ DVB-S2 alone, or another X vs X2 modulation. If there are more systems,
+ then you have a potential issue.
+
+ An application needs to query the device capabilities before requesting
+ any operation from the device.
+
+Signed-off-by: Manu Abraham <abraham.manu@gmail.com>
+Acked-by: Andreas Oberritter <obi@linuxtv.org>
+Acked-by: Oliver Endriss <o.endriss@gmx.de>
+Signed-off-by: Mauro Carvalho Chehab <mchehab@redhat.com>
+---
+ drivers/media/dvb/dvb-core/dvb_frontend.c | 36 +++++++++++++++++++++++
+ include/linux/dvb/frontend.h              |  4 ++-
+ include/linux/dvb/version.h               |  2 +-
+ 3 files changed, 40 insertions(+), 2 deletions(-)
+
+diff --git a/include/linux/dvb/frontend.h b/include/linux/dvb/frontend.h
+index d9251df867b5..cb114f52ccf7 100644
+--- a/include/linux/dvb/frontend.h
++++ b/include/linux/dvb/frontend.h
+@@ -316,7 +316,9 @@ struct dvb_frontend_event {
+ 
+ #define DTV_DVBT2_PLP_ID	43
+ 
+-#define DTV_MAX_COMMAND				DTV_DVBT2_PLP_ID
++#define DTV_ENUM_DELSYS		44
++
++#define DTV_MAX_COMMAND				DTV_ENUM_DELSYS
+ 
+ typedef enum fe_pilot {
+ 	PILOT_ON,
+-- 
+2.48.1
+

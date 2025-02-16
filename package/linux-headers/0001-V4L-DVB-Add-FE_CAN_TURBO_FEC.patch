@@ -1,0 +1,39 @@
+From f6a20eb1a2d35660240cd1eb8dc2bd6504a0c6c5 Mon Sep 17 00:00:00 2001
+From: Klaus Schmidinger <Klaus.Schmidinger@tvdr.de>
+Date: Thu, 1 Jul 2010 01:37:34 -0300
+Subject: [PATCH] V4L/DVB: Add FE_CAN_TURBO_FEC
+
+Some (North American) providers use a non-standard mode called
+"8psk turbo fec". Since there is no flag in the driver that
+would allow an application to determine whether a particular
+device can handle "turbo fec", the attached patch introduces
+FE_CAN_TURBO_FEC.
+
+Since there is no flag in the SI data that would indicate
+that a transponder uses "turbo fec", VDR will assume that
+all 8psk transponders on DVB-S use "turbo fec".
+
+Tested-by: Derek Kelly <user.vdr@gmail.com>
+Signed-off-by: Klaus Schmidinger <Klaus.Schmidinger@tvdr.de>
+Signed-off-by: Douglas Schilling Landgraf <dougsland@redhat.com>
+Signed-off-by: Mauro Carvalho Chehab <mchehab@redhat.com>
+---
+ drivers/media/dvb/dvb-usb/gp8psk-fe.c | 2 +-
+ include/linux/dvb/frontend.h          | 1 +
+ 2 files changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/include/linux/dvb/frontend.h b/include/linux/dvb/frontend.h
+index b6cb5425cde3..493a2bf85f62 100644
+--- a/include/linux/dvb/frontend.h
++++ b/include/linux/dvb/frontend.h
+@@ -62,6 +62,7 @@ typedef enum fe_caps {
+ 	FE_CAN_8VSB			= 0x200000,
+ 	FE_CAN_16VSB			= 0x400000,
+ 	FE_HAS_EXTENDED_CAPS		= 0x800000,   /* We need more bitspace for newer APIs, indicate this. */
++	FE_CAN_TURBO_FEC		= 0x8000000,  /* frontend supports "turbo fec modulation" */
+ 	FE_CAN_2G_MODULATION		= 0x10000000, /* frontend supports "2nd generation modulation" (DVB-S2) */
+ 	FE_NEEDS_BENDING		= 0x20000000, /* not supported anymore, don't use (frontend requires frequency bending) */
+ 	FE_CAN_RECOVER			= 0x40000000, /* frontend can recover from a cable unplug automatically */
+-- 
+2.48.1
+

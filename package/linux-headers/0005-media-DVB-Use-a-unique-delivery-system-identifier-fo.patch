@@ -1,0 +1,48 @@
+From bf3b84006e22ae241ec3d53dbe6c6d1f6ceddb56 Mon Sep 17 00:00:00 2001
+From: Manu Abraham <abraham.manu@gmail.com>
+Date: Sat, 17 Dec 2011 20:36:55 -0300
+Subject: [PATCH] [media] DVB: Use a unique delivery system identifier for
+ DVBC_ANNEX_C
+
+Use a unique delivery system identifier for DVBC_ANNEX_C, just like any
+other.
+
+DVBC_ANNEX_A and DVBC_ANNEX_C have slightly different parameters
+and are used in 2 geographically different locations.
+
+Signed-off-by: Manu Abraham <abraham.manu@gmail.com>
+Signed-off-by: Mauro Carvalho Chehab <mchehab@redhat.com>
+---
+ include/linux/dvb/frontend.h | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
+
+diff --git a/include/linux/dvb/frontend.h b/include/linux/dvb/frontend.h
+index cb114f52ccf7..b2a939f8f1e2 100644
+--- a/include/linux/dvb/frontend.h
++++ b/include/linux/dvb/frontend.h
+@@ -337,7 +337,7 @@ typedef enum fe_rolloff {
+ 
+ typedef enum fe_delivery_system {
+ 	SYS_UNDEFINED,
+-	SYS_DVBC_ANNEX_AC,
++	SYS_DVBC_ANNEX_A,
+ 	SYS_DVBC_ANNEX_B,
+ 	SYS_DVBT,
+ 	SYS_DSS,
+@@ -354,8 +354,13 @@ typedef enum fe_delivery_system {
+ 	SYS_DAB,
+ 	SYS_DVBT2,
+ 	SYS_TURBO,
++	SYS_DVBC_ANNEX_C,
+ } fe_delivery_system_t;
+ 
++
++#define SYS_DVBC_ANNEX_AC	SYS_DVBC_ANNEX_A
++
++
+ struct dtv_cmds_h {
+ 	char	*name;		/* A display name for debugging purposes */
+ 
+-- 
+2.48.1
+
