@@ -428,9 +428,8 @@ define BUSYBOX_BUILD_CMDS
 endef
 
 define BUSYBOX_INSTALL_TARGET_CMDS
-	# Use the 'noclobber' install rule, to prevent BusyBox from overwriting
-	# any full-blown versions of apps installed by other packages.
-	$(BUSYBOX_MAKE_ENV) $(MAKE) $(BUSYBOX_MAKE_OPTS) -C $(@D) install-noclobber
+	# do not install symlinks
+	$(INSTALL) -D -m 0755 $(@D)/busybox $(TARGET_DIR)/bin/busybox 
 	$(BUSYBOX_INSTALL_INDIVIDUAL_BINARIES)
 	$(BUSYBOX_INSTALL_INITTAB)
 	$(BUSYBOX_INSTALL_UDHCPC_SCRIPT)
