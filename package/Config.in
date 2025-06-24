@@ -2972,6 +2972,7 @@ endmenu
 
 menu "External packages"
         source "package/sh4-toolchain-gcc/Config.in"
+        source "package/minisatip/Config.in"
 endmenu
 
 endmenu
