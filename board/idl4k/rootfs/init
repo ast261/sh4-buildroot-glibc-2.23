@@ -1,0 +1,4 @@
+#!/bin/busybox sh
+
+#export TZ=":/etc/localtime"
+exec /bin/busybox init
