@@ -22,10 +22,10 @@
 /dev/ptmx	c	666	0	0	5	2	-	-	-
 
 # serial UART (see kernel: drivers/serial/stm-asc.c)
-/dev/ttyAS	c	666	0	0	204	40	0	1	1
+/dev/ttyAS	c	666	0	0	204	40	0	1	4
 
 # Input stuff
-/dev/input		d	755	0	0	-	-	-	-	-
+/dev/input	d	755	0	0	-	-	-	-	-
 
 # MTD stuff
 /dev/mtd	c	640	0	0	90	0	0	2	4
