@@ -165,7 +165,7 @@ LINUX_MAKE_FLAGS = \
 	ARCH=$(KERNEL_ARCH) \
 	KCFLAGS="$(LINUX_CFLAGS)" \
 	INSTALL_MOD_PATH=$(TARGET_DIR) \
-	CROSS_COMPILE="$(TARGET_CROSS)" \
+	CROSS_COMPILE="$(BUILD_DIR)/sh4-toolchain-gcc-4.9.4/bin/sh4-linux-" \
 	WERROR=0 \
 	REGENERATE_PARSERS=1 \
 	DEPMOD=$(HOST_DIR)/sbin/depmod
@@ -176,16 +176,6 @@ LINUX_MAKE_ENV += \
 	KBUILD_BUILD_USER=buildroot \
 	KBUILD_BUILD_HOST=buildroot \
 	KBUILD_BUILD_TIMESTAMP="$(shell LC_ALL=C TZ='UTC' date -d @$(SOURCE_DATE_EPOCH))"
-endif
-
-# gcc-8 started warning about function aliases that have a
-# non-matching prototype.  This seems rather useful in general, but it
-# causes tons of warnings in the Linux kernel, where we rely on
-# abusing those aliases for system call entry points, in order to
-# sanitize the arguments passed from user space in registers.
-# https://gcc.gnu.org/bugzilla/show_bug.cgi?id=82435
-ifeq ($(BR2_TOOLCHAIN_GCC_AT_LEAST_8),y)
-LINUX_CFLAGS += -Wno-attribute-alias
 endif
 
 # Disable FDPIC if enabled by default in toolchain
