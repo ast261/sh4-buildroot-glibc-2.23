@@ -2970,4 +2970,8 @@ menu "Text editors and viewers"
 	source "package/vim/Config.in"
 endmenu
 
+menu "External packages"
+        source "package/sh4-toolchain-gcc/Config.in"
+endmenu
+
 endmenu

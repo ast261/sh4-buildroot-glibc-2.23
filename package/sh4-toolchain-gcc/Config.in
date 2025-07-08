@@ -1,0 +1,4 @@
+config BR2_PACKAGE_SH4_TOOLCHAIN_GCC
+  bool "idl4k-kernel-toolchain"
+  help
+     idl4k sh4 kernel toolchain
