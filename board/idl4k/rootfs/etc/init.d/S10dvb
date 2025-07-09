@@ -1,0 +1,11 @@
+#!/bin/sh
+
+# stapi
+insmod /lib/modules/$(uname -r)/kernel/stapi/stapi_core_stripped.ko
+insmod /lib/modules/$(uname -r)/kernel/stapi/stapi_ioctl_stripped.ko
+
+source /root/load_env.sh
+cd /root
+export AXE_API_TYPE=linuxdvb
+exec /root/main_axe.out&
+

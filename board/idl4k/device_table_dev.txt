@@ -33,3 +33,22 @@
 
 # I2C device nodes
 /dev/i2c-	c	666	0	0	89	0	0	1	2
+
+# stapi
+/dev/stapi	d	755	0	0	-	-	-	-	-
+/dev/stapi/stpti5_ioctl        c       644	0	0	236	0	-	-	-
+/dev/stapi/stsys_ioctl         c       644	0	0	237	0	-	-	-
+/dev/stapi/stnet_ioctl         c       644	0	0	238	0	-	-	-
+/dev/stapi/stinject_ioctl      c       644	0	0	239	0	-	-	-
+/dev/stapi/stfdma_ioctl        c       644	0	0	240	0	-	-	-
+/dev/stapi/sti2c_ioctl         c       644	0	0	241	0	-	-	-
+/dev/stapi/stpwm_ioctl         c       644	0	0	242	0	-	-	-
+/dev/stapi/stpio_ioctl         c       644	0	0	243	0	-	-	-
+/dev/stapi/stpower_ioctl       c       644	0	0	244	0	-	-	-
+/dev/stapi/stbuffer_ioctl      c       644	0	0	245	0	-	-	-
+/dev/stapi/stavmem_ioctl       c       644	0	0	246	0	-	-	-
+/dev/stapi/stevt_ioctl         c       644	0	0	247	0	-	-	-
+/dev/stapi/sttbx_ioctl         c       644	0	0	248	0	-	-	-
+/dev/stapi/stcommon_ioctl      c       644	0	0	249	0	-	-	-
+
+
