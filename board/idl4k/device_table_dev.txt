@@ -35,7 +35,7 @@
 /dev/i2c-	c	666	0	0	89	0	0	1	2
 
 # stapi
-/dev/stapi	d	755	0	0	-	-	-	-	-
+/dev/stapi                     d	755	0	0	-	-	-	-	-
 /dev/stapi/stpti5_ioctl        c       644	0	0	236	0	-	-	-
 /dev/stapi/stsys_ioctl         c       644	0	0	237	0	-	-	-
 /dev/stapi/stnet_ioctl         c       644	0	0	238	0	-	-	-
@@ -51,4 +51,20 @@
 /dev/stapi/sttbx_ioctl         c       644	0	0	248	0	-	-	-
 /dev/stapi/stcommon_ioctl      c       644	0	0	249	0	-	-	-
 
+# axe
+/dev/axe                       d       755	0	0	-	-	-	-	-
+/dev/axe/demuxts-0             c       644	0	0	231	1	-	-	-
+/dev/axe/demuxts-1             c       644	0	0	231	0	-	-	-
+/dev/axe/demuxts-2             c       644	0	0	231	3	-	-	-
+/dev/axe/demuxts-3             c       644	0	0	231	2	-	-	-
+/dev/axe/demux-0               c       644	0	0	232	1	-	-	-
+/dev/axe/demux-1               c       644	0	0	232	0	-	-	-
+/dev/axe/demux-2               c       644	0	0	232	3	-	-	-
+/dev/axe/demux-3               c       644	0	0	232	2	-	-	-
+/dev/axe/fp-0                  c       644	0	0	233	0	-	-	-
+/dev/axe/frontend-0            c       644	0	0	234	0	-	-	-
+/dev/axe/frontend-1            c       644	0	0	234	1	-	-	-
+/dev/axe/frontend-2            c       644	0	0	234	2	-	-	-
+/dev/axe/frontend-3            c       644	0	0	234	3	-	-	-
+/dev/axe/i2c_drv               c       644	0	0	235	0	-	-	-
 
