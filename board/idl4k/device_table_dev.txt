@@ -28,8 +28,17 @@
 /dev/input	d	755	0	0	-	-	-	-	-
 
 # MTD stuff
-/dev/mtd	c	640	0	0	90	0	0	2	4
-/dev/mtdblock	b	640	0	0	31	0	0	1	4
+/dev/mtd0	c	640	0	0	90	0	-	-	-
+/dev/mtd0ro	c	640	0	0	90	1	-	-	-
+/dev/mtd1	c	640	0	0	90	2	-	-	-
+/dev/mtd1ro	c	640	0	0	90	3	-	-	-
+/dev/mtd2	c	640	0	0	90	4	-	-	-
+/dev/mtd2ro	c	640	0	0	90	5	-	-	-
+/dev/mtd3	c	640	0	0	90	6	-	-	-
+/dev/mtd3ro	c	640	0	0	90	7	-	-	-
+/dev/mtd4	c	640	0	0	90	8	-	-	-
+/dev/mtd4ro	c	640	0	0	90	9	-	-	-
+/dev/mtdblock	b	640	0	0	31	0	0	1	5
 
 # I2C device nodes
 /dev/i2c-	c	666	0	0	89	0	0	1	2
