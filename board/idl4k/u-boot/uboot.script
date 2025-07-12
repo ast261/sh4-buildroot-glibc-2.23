@@ -1,0 +1,2 @@
+fatload usb 0 $load_addr idl4k.bin
+bootm $load_addr
