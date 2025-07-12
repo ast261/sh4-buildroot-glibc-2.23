@@ -1,0 +1,34 @@
+#!/bin/sh
+
+DAEMON=/usr/sbin/ntpd
+PIDFILE=/var/run/ntpd.pid
+NTPD_ARGS="-N -p 0.pool.ntp.org -p 1.pool.ntp.org -p 2.pool.ntp.org"
+
+
+case "$1" in
+  start)
+    printf "starting ntpd: "
+    start-stop-daemon -S -x "$DAEMON" -- $NTPD_ARGS
+    [ $? = 0 ] && echo "OK" || echo "FAIL"
+    while [ "$(date +%Y)" -lt 2025 ]; do
+      echo "waiting for correct time..."
+      sleep 1
+    done
+    ;;
+  stop)
+    printf "stopping ntpd: "
+    start-stop-daemon -K -x "$DAEMON"
+    [ $? = 0 ] && echo "OK" || echo "FAIL"
+    ;;
+  restart)
+    $0 stop
+    sleep 1
+    $0 start
+    ;;
+  *)
+    echo "Usage: $0 {start|stop|restart}"
+    exit 1
+    ;;
+esac
+
+exit $?
