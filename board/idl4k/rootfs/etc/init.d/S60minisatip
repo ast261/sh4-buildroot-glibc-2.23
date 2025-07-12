@@ -1,0 +1,30 @@
+#!/bin/sh
+
+DAEMON=/sbin/minisatip
+PIDFILE=/var/run/minisatip.pid
+MINISATIP_ARGS="-g"
+
+
+case "$1" in
+  start)
+    printf "starting minisatip: "
+    start-stop-daemon -S -x "$DAEMON" -- $MINISATIP_ARGS
+    [ $? = 0 ] && echo "OK" || echo "FAIL"
+    ;;
+  stop)
+    printf "stopping minisatip: "
+    start-stop-daemon -K -x "$DAEMON"
+    [ $? = 0 ] && echo "OK" || echo "FAIL"
+    ;;
+  restart)
+    $0 stop
+    sleep 1
+    $0 start
+    ;;
+  *)
+    echo "Usage: $0 {start|stop|restart}"
+    exit 1
+    ;;
+esac
+
+exit $?
