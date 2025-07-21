@@ -3,16 +3,24 @@
 DAEMON=/usr/sbin/ntpd
 PIDFILE=/var/run/ntpd.pid
 NTPD_ARGS="-N -p 0.pool.ntp.org -p 1.pool.ntp.org -p 2.pool.ntp.org"
-
+MAX_ATTEMPTS=7
 
 case "$1" in
   start)
     printf "starting ntpd: "
     start-stop-daemon -S -x "$DAEMON" -- $NTPD_ARGS
     [ $? = 0 ] && echo "OK" || echo "FAIL"
-    while [ "$(date +%Y)" -lt 2025 ]; do
-      echo "waiting for correct time..."
-      sleep 1
+    attempt=1
+    while [ "$attempt" -le "$MAX_ATTEMPTS" ]; do
+      CURRENT_YEAR=$(date +%Y 2>/dev/null)
+      if [ "$CURRENT_YEAR" -lt 2025 ]; then
+        echo "waiting for correct time..."
+        sleep 1
+      else
+        echo "... done"
+        break
+      fi
+      attempt=$((attempt + 1))
     done
     ;;
   stop)
