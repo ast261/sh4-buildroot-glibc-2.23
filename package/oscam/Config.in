@@ -1,0 +1,4 @@
+config BR2_PACKAGE_OSCAM
+	bool "oscam"
+	help
+          oscam

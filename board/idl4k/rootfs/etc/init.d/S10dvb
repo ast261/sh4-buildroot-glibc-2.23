@@ -1,0 +1,29 @@
+#!/bin/sh
+
+MODULE_PATH=/lib/modules/$(uname -r)/kernel
+
+# ST Microelectronics stapi
+insmod $MODULE_PATH/stapi/stapi_core_stripped.ko
+insmod $MODULE_PATH/stapi/stapi_ioctl_stripped.ko
+
+# fta i2c driver
+insmod $MODULE_PATH/axe/axe_i2c.ko
+
+# fta frontend driver
+insmod $MODULE_PATH/axe/axe_fe.ko
+
+# Inverto fp-s2i driver
+insmod $MODULE_PATH/axe/axe_fp.ko
+
+# Inverto demux driver
+insmod $MODULE_PATH/axe/axe_dmx.ko
+
+# Inverto demux-ts driver
+insmod $MODULE_PATH/axe/axe_dmxts.ko
+
+# stapi init
+source /root/load_env.sh
+cd /root
+export AXE_API_TYPE=linuxdvb
+exec /root/main_axe.out&
+

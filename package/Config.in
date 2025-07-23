@@ -2971,7 +2971,9 @@ menu "Text editors and viewers"
 endmenu
 
 menu "External packages"
+        source "package/sh4-toolchain-gcc/Config.in"
         source "package/minisatip/Config.in"
+        source "package/oscam/Config.in"
 endmenu
 
 endmenu

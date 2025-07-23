@@ -7,7 +7,7 @@ MINISATIP_CONF_OPTS += --enable-axe --enable-dvbapi --enable-dvbcsa --disable-ne
 define MINISATIP_INSTALL_TARGET_CMDS
   $(INSTALL) -D -m 0755 $(@D)/minisatip $(TARGET_DIR)/sbin
   mkdir -p $(TARGET_DIR)/usr/share/minisatip
-  cp -ar $(@D)/html/* $(TARGET_DIR)/usr/share/minisatip
+  cp -ar $(@D)/html $(TARGET_DIR)/usr/share/minisatip
 endef
 
 $(eval $(autotools-package))

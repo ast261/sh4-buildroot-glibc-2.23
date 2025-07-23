@@ -1,0 +1,49 @@
+# See package/makedevs/README for details
+#
+# This device table is used only to create device files when a static
+# device configuration is used (entries in /dev are static).
+#
+# <name>	<type>	<mode>	<uid>	<gid>	<major>	<minor>	<start>	<inc>	<count>
+
+# Normal system devices
+/dev/console	c	666	0	0	5	1	-	-	-
+/dev/null	c	666	0	0	1	3	0	0	-
+/dev/zero	c	666	0	0	1	5	0	0	-
+
+# Input stuff
+/dev/input	d	755	0	0	-	-	-	-	-
+
+# stapi
+/dev/stapi                     d	755	0	0	-	-	-	-	-
+/dev/stapi/stpti5_ioctl        c       644	0	0	236	0	-	-	-
+/dev/stapi/stsys_ioctl         c       644	0	0	237	0	-	-	-
+/dev/stapi/stnet_ioctl         c       644	0	0	238	0	-	-	-
+/dev/stapi/stinject_ioctl      c       644	0	0	239	0	-	-	-
+/dev/stapi/stfdma_ioctl        c       644	0	0	240	0	-	-	-
+/dev/stapi/sti2c_ioctl         c       644	0	0	241	0	-	-	-
+/dev/stapi/stpwm_ioctl         c       644	0	0	242	0	-	-	-
+/dev/stapi/stpio_ioctl         c       644	0	0	243	0	-	-	-
+/dev/stapi/stpower_ioctl       c       644	0	0	244	0	-	-	-
+/dev/stapi/stbuffer_ioctl      c       644	0	0	245	0	-	-	-
+/dev/stapi/stavmem_ioctl       c       644	0	0	246	0	-	-	-
+/dev/stapi/stevt_ioctl         c       644	0	0	247	0	-	-	-
+/dev/stapi/sttbx_ioctl         c       644	0	0	248	0	-	-	-
+/dev/stapi/stcommon_ioctl      c       644	0	0	249	0	-	-	-
+
+# axe
+/dev/axe                       d       755	0	0	-	-	-	-	-
+/dev/axe/demuxts-0             c       644	0	0	231	1	-	-	-
+/dev/axe/demuxts-1             c       644	0	0	231	0	-	-	-
+/dev/axe/demuxts-2             c       644	0	0	231	3	-	-	-
+/dev/axe/demuxts-3             c       644	0	0	231	2	-	-	-
+/dev/axe/demux-0               c       644	0	0	232	1	-	-	-
+/dev/axe/demux-1               c       644	0	0	232	0	-	-	-
+/dev/axe/demux-2               c       644	0	0	232	3	-	-	-
+/dev/axe/demux-3               c       644	0	0	232	2	-	-	-
+/dev/axe/fp-0                  c       644	0	0	233	0	-	-	-
+/dev/axe/frontend-0            c       644	0	0	234	0	-	-	-
+/dev/axe/frontend-1            c       644	0	0	234	1	-	-	-
+/dev/axe/frontend-2            c       644	0	0	234	2	-	-	-
+/dev/axe/frontend-3            c       644	0	0	234	3	-	-	-
+/dev/axe/i2c_drv               c       644	0	0	235	0	-	-	-
+

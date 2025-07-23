@@ -14,10 +14,18 @@
 # process   == program to run
 
 # Startup the system
-::sysinit:/bin/mount -t proc proc /proc
-::sysinit:/bin/mount -o remount,rw /
+::sysinit:/bin/busybox mount -t proc proc /proc
+::sysinit:/bin/busybox mount -o remount,rw /
+::sysinit:/bin/busybox --install -s
 ::sysinit:/bin/mkdir -p /dev/pts /dev/shm
+::sysinit:/bin/mkdir -p /mnt/data
+::sysinit:/bin/mount -t sysfs sysfs /sys
+::sysinit:/bin/touch /dev/mdev.seq
+::sysinit:/bin/echo /sbin/mdev > /proc/sys/kernel/hotplug
+::sysinit:/sbin/mdev -s
 ::sysinit:/bin/mount -a
+::sysinit:/bin/mkdir -p /mnt/data/satip-axe/sysconfig
+::sysinit:/bin/ln -s /mnt/data/satip-axe/sysconfig /etc/sysconfig
 ::sysinit:/bin/mkdir -p /run/lock/subsys
 ::sysinit:/sbin/swapon -a
 null::sysinit:/bin/ln -sf /proc/self/fd /dev/fd
@@ -28,6 +36,8 @@ null::sysinit:/bin/ln -sf /proc/self/fd/2 /dev/stderr
 # now run any rc scripts
 ::sysinit:/etc/init.d/rcS
 
+# Console
+ttyAS0::askfirst:/bin/sh
 # Put a getty on the serial port
 #ttyS0::respawn:/sbin/getty -L ttyS0 115200 vt100 # GENERIC_SERIAL
 

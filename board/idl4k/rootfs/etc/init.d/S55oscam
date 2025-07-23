@@ -1,0 +1,30 @@
+#!/bin/sh
+
+DAEMON=/usr/bin/oscam
+PIDFILE=/var/run/oscam.pid
+OSCAM_ARGS="-b -B $PIDFILE -c /etc/sysconfig/oscam"
+
+
+case "$1" in
+  start)
+    printf "starting oscam: "
+    start-stop-daemon -S -x "$DAEMON" -- $OSCAM_ARGS
+    [ $? = 0 ] && echo "OK" || echo "FAIL"
+    ;;
+  stop)
+    printf "stopping oscam: "
+    start-stop-daemon -K -x "$DAEMON"
+    [ $? = 0 ] && echo "OK" || echo "FAIL"
+    ;;
+  restart)
+    $0 stop
+    sleep 1
+    $0 start
+    ;;
+  *)
+    echo "Usage: $0 {start|stop|restart}"
+    exit 1
+    ;;
+esac
+
+exit $?

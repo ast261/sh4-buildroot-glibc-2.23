@@ -1,0 +1,3 @@
+fatload usb 0 $load_addr idl4k.bin
+set bootargs console=ttyAS0,115200
+bootm $load_addr
