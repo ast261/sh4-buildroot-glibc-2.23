@@ -1,0 +1,6 @@
+#!/bin/sh
+
+# power saving
+ethtool -s eth0 speed 100 duplex full
+
+
