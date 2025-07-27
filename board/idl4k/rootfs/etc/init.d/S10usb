@@ -1,0 +1,15 @@
+#!/bin/sh
+
+MODULE_PATH=/lib/modules/$(uname -r)/kernel/drivers/usb/serial
+
+# USB serial kernel modules
+insmod $MODULE_PATH/usbserial.ko
+#insmod $MODULE_PATH/cp210x.ko
+insmod $MODULE_PATH/ftdi_sio.ko
+#insmod $MODULE_PATH/io_edgeport.ko
+#insmod $MODULE_PATH/io_ti.ko
+#insmod $MODULE_PATH/oti6858.ko
+#insmod $MODULE_PATH/pl2303.ko
+#insmod $MODULE_PATH/spcp8x5.ko
+#insmod $MODULE_PATH/ti_usb_3410_5052.ko
+
