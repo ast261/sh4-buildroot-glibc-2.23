@@ -1,8 +1,9 @@
-MINISATIP_VERSION = 0f10a5c6505c8ea561762f703e91724f0078aea4
-MINISATIP_SITE = https://github.com/ast261/minisatip.git
-MINISATIP_SITE_METHOD = git
+MINISATIP_VERSION = v2.0.5-axe
+MINISATIP_SITE = $(call github,ast261,minisatip,$(MINISATIP_VERSION))
 
 MINISATIP_CONF_OPTS += --enable-axe --enable-dvbapi --enable-dvbcsa --disable-netcv
+
+MINISATIP_MAKE_OPTS += TAG=$(MINISATIP_VERSION)
 
 define MINISATIP_INSTALL_TARGET_CMDS
   $(INSTALL) -D -m 0755 $(@D)/minisatip $(TARGET_DIR)/sbin
