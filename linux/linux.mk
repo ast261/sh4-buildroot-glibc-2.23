@@ -174,6 +174,16 @@ LINUX_MAKE_ENV += \
 	KBUILD_BUILD_TIMESTAMP="$(shell LC_ALL=C TZ='UTC' date -d @$(SOURCE_DATE_EPOCH))"
 endif
 
+# gcc-8 started warning about function aliases that have a
+# non-matching prototype.  This seems rather useful in general, but it
+# causes tons of warnings in the Linux kernel, where we rely on
+# abusing those aliases for system call entry points, in order to
+# sanitize the arguments passed from user space in registers.
+# https://gcc.gnu.org/bugzilla/show_bug.cgi?id=82435
+ifeq ($(BR2_TOOLCHAIN_GCC_AT_LEAST_8),y)
+LINUX_CFLAGS += -Wno-attribute-alias
+endif
+
 # Disable FDPIC if enabled by default in toolchain
 ifeq ($(BR2_BINFMT_FDPIC),y)
 LINUX_CFLAGS += -mno-fdpic
@@ -403,7 +413,7 @@ ifeq ($(BR2_TARGET_ROOTFS_INITRAMFS),y)
 define LINUX_KCONFIG_FIXUP_CMDS_ROOTFS_CPIO
 	@mkdir -p $(BINARIES_DIR)
 	$(Q)touch $(BINARIES_DIR)/rootfs.cpio
-	$(call KCONFIG_SET_OPT,CONFIG_INITRAMFS_SOURCE,"$(BINARIES_DIR)/rootfs.cpio")
+	$(call KCONFIG_SET_OPT,CONFIG_INITRAMFS_SOURCE,"$${BR_BINARIES_DIR}/rootfs.cpio")
 	$(call KCONFIG_SET_OPT,CONFIG_INITRAMFS_ROOT_UID,0)
 	$(call KCONFIG_SET_OPT,CONFIG_INITRAMFS_ROOT_GID,0)
 endef
