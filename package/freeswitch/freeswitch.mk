@@ -19,6 +19,9 @@ FREESWITCH_LICENSE_FILES = \
 	libs/apr/LICENSE \
 	libs/srtp/LICENSE
 
+# 0006-Move-project-to-PCRE2.patch
+FREESWITCH_AUTORECONF = YES
+
 FREESWITCH_CPE_ID_VENDOR = freeswitch
 
 # required dependencies
@@ -27,7 +30,7 @@ FREESWITCH_DEPENDENCIES = \
 	jpeg \
 	libcurl \
 	openssl \
-	pcre \
+	pcre2 \
 	spandsp \
 	sofia-sip \
 	speex \
@@ -205,11 +208,6 @@ endif
 ifeq ($(BR2_PACKAGE_LIBKS),y)
 FREESWITCH_DEPENDENCIES += libks
 FREESWITCH_ENABLED_MODULES += endpoints/mod_verto
-endif
-
-ifeq ($(BR2_PACKAGE_LIBLDNS),y)
-FREESWITCH_DEPENDENCIES += libldns
-FREESWITCH_ENABLED_MODULES += applications/mod_enum
 endif
 
 ifeq ($(BR2_PACKAGE_LIBMEMCACHED),y)

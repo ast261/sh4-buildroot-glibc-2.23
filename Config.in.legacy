@@ -144,13 +144,86 @@ endif
 
 ###############################################################################
 
-comment "Legacy options removed in 2026.02.1"
+comment "Legacy options removed in 2026.05"
+
+config BR2_KERNEL_HEADERS_6_19
+	bool "kernel headers version 6.19.x are no longer supported"
+	select BR2_LEGACY
+	help
+	  Version 6.19.x of the Linux kernel headers are no longer
+	  maintained upstream and are now removed.
+
+config BR2_PACKAGE_PCRE
+	bool "pcre removed"
+	select BR2_LEGACY
+	help
+	  pcre was no longer maintained upstream, so it has been
+	  dropped. Look at pcre2 for an alternative.
+
+config BR2_PACKAGE_SNORT
+	bool "snort removed"
+	select BR2_LEGACY
+	help
+	  snort was no longer maintained upstream, so it has been
+	  dropped. Look at snort3 for an alternative.
+
+config BR2_PACKAGE_CEGUI
+	bool "cegui"
+	select BR2_LEGACY
+	help
+	  cegui was removed from Buildroot as it was insufficiently
+	  maintained. It can be re-added if someone volunteers to
+	  maintain it.
+
+config BR2_PACKAGE_SPHINXBASE
+	bool "sphinxbase removed"
+	select BR2_LEGACY
+	help
+	  sphinxbase was no longer maintained upstream, so it has
+	  been dropped.
+
+config BR2_PACKAGE_OPENSWAN
+	bool "openswan removed"
+	select BR2_LEGACY
+	help
+	  Openswan was no longer maintained upstream, so it has
+	  been dropped.
+
+config BR2_PACKAGE_RUBIX
+	bool "rubix removed"
+	select BR2_LEGACY
+	help
+	  Rubix was no longer maintained upstream, so it has
+	  been dropped.
+
+config BR2_PACKAGE_LLAMA_CPP_SERVER
+	bool "llama-cpp option removed"
+	select BR2_PACKAGE_LLAMA_CPP_TOOLS
+	select BR2_LEGACY
+	help
+	  Several tools (server, cli) now require building both
+	  tools and server, so enable both with the same config
+	  BR2_PACKAGE_LLAMA_CPP_TOOLS
 
 config BR2_PACKAGE_PYTHON3_OSSAUDIODEV
 	bool "python3 ossaudiodev module removed"
 	select BR2_LEGACY
 	help
 	  The ossaudiodev module was removed in Python 3.13.
+
+config BR2_TARGET_EDK2_PLATFORM_OVMF_I386
+	bool "EDK2 OVMF IA32 removed"
+	select BR2_LEGACY
+	help
+	  EDK2 OVMF IA32 support was removed in upstream version
+	  202511, so it has been dropped.
+
+config BR2_BINUTILS_VERSION_2_43_X
+	bool "binutils 2.43 has been removed"
+	select BR2_LEGACY
+	help
+	  binutils 2.43 has been removed, select a newer version
+	  instead.
 
 comment "Legacy options removed in 2026.02"
 
@@ -3472,12 +3545,12 @@ config BR2_PACKAGE_KODI_LIBTHEORA
 	  Kodi does not need libtheora
 
 config BR2_PACKAGE_CEGUI06
-	bool "BR2_PACKAGE_CEGUI06 was renamed"
-	select BR2_PACKAGE_CEGUI
+	bool "BR2_PACKAGE_CEGUI06 was removed"
 	select BR2_LEGACY
 	help
-	  The BR2_PACKAGE_CEGUI06 config symbol was renamed to
-	  BR2_PACKAGE_CEGUI.
+	  cegui06 was removed from Buildroot as it was insufficiently
+	  maintained. It can be re-added if someone volunteers to
+	  maintain it.
 
 config BR2_GCC_VERSION_5_X
 	bool "gcc 5.x support removed"
