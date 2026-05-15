@@ -1,0 +1,66 @@
+From: Local patch <local@local>
+Date: Fri, 15 May 2026 00:00:00 +0000
+Subject: [PATCH] bundled: add missing linux/time_types.h
+
+taskstats.h in the bundled linux headers includes <linux/time_types.h>
+(added in Linux 5.1) for __kernel_timespec, but that file is absent
+from the bundled set.  Add a minimal stub so the build succeeds on
+hosts whose system kernel headers pre-date 5.1.
+
+Signed-off-by: Local patch <local@local>
+---
+ bundled/linux/include/uapi/linux/time_types.h | 46 ++++++++++++++++++
+ 1 file changed, 46 insertions(+)
+ create mode 100644 bundled/linux/include/uapi/linux/time_types.h
+
+diff --git a/bundled/linux/include/uapi/linux/time_types.h b/bundled/linux/include/uapi/linux/time_types.h
+new file mode 100644
+--- /dev/null
++++ b/bundled/linux/include/uapi/linux/time_types.h
+@@ -0,0 +1,46 @@
++/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
++/* Minimal stub for hosts lacking linux/time_types.h (pre-Linux 5.1). */
++#ifndef _LINUX_TIME_TYPES_H
++#define _LINUX_TIME_TYPES_H
++
++#include <linux/types.h>
++
++#ifndef __kernel_time64_t
++typedef __s64 __kernel_time64_t;
++#endif
++
++#ifndef __kernel_long_t
++typedef long __kernel_long_t;
++#endif
++
++struct __kernel_timespec {
++	__kernel_time64_t	tv_sec;
++	long long		tv_nsec;
++};
++
++struct __kernel_itimerspec {
++	struct __kernel_timespec it_interval;
++	struct __kernel_timespec it_value;
++};
++
++struct __kernel_old_timeval {
++	__kernel_long_t tv_sec;
++	__kernel_long_t tv_usec;
++};
++
++struct __kernel_old_timespec {
++	__kernel_long_t tv_sec;
++	long		tv_nsec;
++};
++
++struct __kernel_old_itimerval {
++	struct __kernel_old_timeval it_interval;
++	struct __kernel_old_timeval it_value;
++};
++
++struct __kernel_sock_timeval {
++	__s64 tv_sec;
++	__s64 tv_usec;
++};
++
++#endif /* _LINUX_TIME_TYPES_H */
