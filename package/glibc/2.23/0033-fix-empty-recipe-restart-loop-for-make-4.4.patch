@@ -1,0 +1,106 @@
+From: idl4k toolchain fork
+Subject: [PATCH] fix empty-recipe restart loop with GNU make >= 4.4
+
+glibc 2.23 uses the "stamp / header" pattern in six places:
+
+    target.h: target.stmp ; @:
+    target.stmp: <real prereqs>
+            ... build target.h via move-if-change ...
+            touch $@
+
+The intent is that target.stmp is the "watchdog" timestamp.  target.h is
+only rewritten when its content changes, but target.stmp is touched on
+every rebuild.  The `; @:` recipe on target.h says "if you see stmp is
+newer than h, do nothing; the file is up to date by definition".
+
+This pattern relied on make 4.3 (and earlier) behaviour: running an
+empty recipe marks the target as "considered" but does NOT propagate a
+"this target was remade" signal up to any includer.
+
+GNU make 4.4 changed this: a target whose only recipe is `@:` is now
+marked as remade.  Since several of these target.h files appear as
+prerequisites in auto-generated `.d` files that are included by make
+(e.g. csu's tcb-offsets.h.d lists libc-modules.h as a prereq, and
+bits/stdio_lim.d is itself one of the targets above), make decides the
+including `.d` must be regenerated, re-executes the makefile, and on
+the next pass the stamp-newer-than-header condition still holds.
+Result: an infinite make-restart loop spinning at 100% CPU with
+MAKE_RESTARTS growing without bound.  We saw the csu/subdir_lib
+sub-make hit MAKE_RESTARTS=10570 before being killed.
+
+Replacing `; @:` with `; @touch $@` makes the recipe actually update
+the target's mtime, so after one pass target.h is newer than
+target.stmp and the staleness condition no longer holds.  Subsequent
+genuine updates of the stmp's prerequisites still trigger a full
+content rebuild through the .stmp rule, which produces a new .h via
+move-if-change as before.
+
+Affected sites:
+  Makeconfig: libc-modules.h
+  Makerules : libc-abis.h, runtime-linker.h, lib-names-$(abi).h,
+              bits/stdio_lim.{h,d}
+  elf/Makefile: trusted-dirs.h
+
+This is separate from the MAKEFLAGS / -s detection fixes carried in
+patch 0032; both are needed for a working build with make >= 4.4.
+
+--- a/Makeconfig
++++ b/Makeconfig
+@@ -1045,7 +1045,7 @@
+ # These are the possible values for the MODULE_NAME macro defined when building
+ # sources, to identify which module the translation unit is going to be built
+ # into.
+-$(common-objpfx)libc-modules.h: $(common-objpfx)libc-modules.stmp; @:
++$(common-objpfx)libc-modules.h: $(common-objpfx)libc-modules.stmp; @touch $@
+ $(common-objpfx)libc-modules.stmp: $(..)scripts/gen-libc-modules.awk \
+ 				   $(common-objpfx)soversions.i
+ 	$(AWK) -v buildlist="$(subst -,_,$(built-modules))" -f $^ > ${@:stmp=T}
+--- a/Makerules
++++ b/Makerules
+@@ -110,7 +110,7 @@
+
+ ifndef avoid-generated
+ before-compile := $(common-objpfx)libc-abis.h $(before-compile)
+-$(common-objpfx)libc-abis.h: $(common-objpfx)libc-abis.stamp; @:
++$(common-objpfx)libc-abis.h: $(common-objpfx)libc-abis.stamp; @touch $@
+ $(common-objpfx)libc-abis.stamp: $(..)scripts/gen-libc-abis \
+ 			     $(firstword $(wildcard $(sysdirs:=/libc-abis)) \
+ 					 $(..)libc-abis) \
+@@ -124,7 +124,7 @@
+ endif # avoid-generated
+
+ ifeq (yes,$(build-shared))
+-$(common-objpfx)runtime-linker.h: $(common-objpfx)runtime-linker.stamp; @:
++$(common-objpfx)runtime-linker.h: $(common-objpfx)runtime-linker.stamp; @touch $@
+ $(common-objpfx)runtime-linker.stamp: $(common-objpfx)config.make
+ 	$(make-target-directory)
+ 	echo '#define RUNTIME_LINKER "$(rtlddir)/$(rtld-installed-name)"' \
+@@ -256,7 +256,7 @@
+ 	 echo '#endif	/* gnu/lib-names.h */'; \
+ 	} >  $@
+ endif
+-$(common-objpfx)$(lib-names-h-abi): $(common-objpfx)$(lib-names-stmp-abi); @:
++$(common-objpfx)$(lib-names-h-abi): $(common-objpfx)$(lib-names-stmp-abi); @touch $@
+ $(common-objpfx)$(lib-names-stmp-abi): $(..)scripts/lib-names.awk \
+ 				       $(common-objpfx)soversions.i
+ 	$(make-target-directory)
+@@ -1414,7 +1414,7 @@
+
+ stdio_lim = $(common-objpfx)bits/stdio_lim.h
+
+-$(stdio_lim:lim.h=%.h) $(stdio_lim:lim.h=%.d): $(stdio_lim:lim.h=%.st); @:
++$(stdio_lim:lim.h=%.h) $(stdio_lim:lim.h=%.d): $(stdio_lim:lim.h=%.st); @touch $@
+ $(stdio_lim:h=st): $(..)stdio-common/stdio_lim.h.in $(..)Rules \
+ 		   $(common-objpfx)config.make
+ 	$(make-target-directory)
+--- a/elf/Makefile
++++ b/elf/Makefile
+@@ -404,7 +404,7 @@
+ # libraries when using LD_LIBRARY_PATH in a setuid program.  The user can
+ # add directories to the list by defining $(user-defined-trusted-dirs)
+ # before starting make.
+-$(objpfx)trusted-dirs.h: $(objpfx)trusted-dirs.st; @:
++$(objpfx)trusted-dirs.h: $(objpfx)trusted-dirs.st; @touch $@
+ $(objpfx)trusted-dirs.st: Makefile $(..)Makeconfig
+ 	$(make-target-directory)
+ 	echo "$(subst :, ,$(default-rpath) $(user-defined-trusted-dirs))"    \

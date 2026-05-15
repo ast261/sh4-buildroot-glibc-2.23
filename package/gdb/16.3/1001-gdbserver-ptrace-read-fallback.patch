@@ -1,0 +1,75 @@
+From: idl4k toolchain
+Subject: [PATCH] gdbserver: fall back to PTRACE_PEEKTEXT when /proc/PID/mem read fails
+
+On Linux < 3.2, reading executable (text) pages via /proc/PID/mem
+returns EPERM.  When Z0 (software-breakpoint packet) is not supported
+by the gdbserver target, host GDB inserts breakpoints by hand: it
+reads the current instruction bytes, replaces them with the trap
+opcode, and writes them back.  The read step fails on the STx7108
+(2.6.32 kernel) with E01, producing "Cannot access memory at address".
+
+Patch 1000 already handles the write half via PTRACE_POKETEXT.  Add
+the symmetric PTRACE_PEEKTEXT fallback for reads so that the full
+read-modify-write cycle works on old kernels.
+
+diff --git a/gdbserver/linux-low.cc b/gdbserver/linux-low.cc
+--- a/gdbserver/linux-low.cc
++++ b/gdbserver/linux-low.cc
+@@ -5457,11 +5457,56 @@
+   return 0;
+ }
+
++/* Read LEN bytes from the inferior at MEMADDR into MYADDR using
++   PTRACE_PEEKTEXT.  Used as a fallback when the /proc/PID/mem
++   approach fails (e.g. Linux < 3.2 where reads from read-only text
++   pages via /proc/PID/mem return EPERM).  */
++
++static int
++ptrace_read_memory (CORE_ADDR memaddr, gdb_byte *myaddr, int len)
++{
++  pid_t pid;
++  if (current_thread != nullptr)
++    pid = current_thread->id.lwp ();
++  else if (current_process () != nullptr)
++    pid = current_process ()->pid;
++  else
++    return EIO;
++
++  CORE_ADDR addr = memaddr;
++  gdb_byte *data = myaddr;
++  int remaining = len;
++
++  while (remaining > 0)
++    {
++      CORE_ADDR word_addr = addr & ~((CORE_ADDR) (sizeof (long) - 1));
++      int word_offset = (int) (addr - word_addr);
++      int bytes = std::min (remaining, (int) (sizeof (long) - word_offset));
++
++      errno = 0;
++      long word = ptrace (PTRACE_PEEKTEXT, pid,
++			  (PTRACE_TYPE_ARG3) (uintptr_t) word_addr, 0);
++      if (errno != 0)
++	return errno;
++
++      memcpy (data, (gdb_byte *) &word + word_offset, bytes);
++
++      addr += bytes;
++      data += bytes;
++      remaining -= bytes;
++    }
++
++  return 0;
++}
++
+ int
+ linux_process_target::read_memory (CORE_ADDR memaddr,
+ 				   unsigned char *myaddr, int len)
+ {
+-  return proc_xfer_memory (memaddr, myaddr, nullptr, len);
++  int err = proc_xfer_memory (memaddr, myaddr, nullptr, len);
++  if (err != 0)
++    err = ptrace_read_memory (memaddr, myaddr, len);
++  return err;
+ }
+
+ /* Write LEN bytes from MYADDR to the inferior at MEMADDR using

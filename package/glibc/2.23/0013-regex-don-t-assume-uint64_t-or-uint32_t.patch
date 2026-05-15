@@ -1,0 +1,78 @@
+From 567d8c1f6852c5d5aad4d46da34b6276e400d5dd Mon Sep 17 00:00:00 2001
+From: Paul Eggert <eggert@cs.ucla.edu>
+Date: Mon, 20 Nov 2017 16:25:49 -0800
+Subject: [PATCH] regex: don't assume uint64_t or uint32_t
+
+This avoids -Werror=overflow errors for 32-bit systems in
+the 64-bit case.  Problem reported by Joseph Myers in:
+https://sourceware.org/ml/libc-alpha/2017-11/msg00694.html
+Also, when this code is used in Gnulib it ports to platforms
+that lack uint64_t and uint32_t.  The C standard doesn't guarantee
+them, and on some 32-bit compilers there is no uint64_t.
+Problem reported by Gianluigi Tiesi in:
+http://lists.gnu.org/archive/html/bug-gnulib/2012-03/msg00154.html
+* posix/regcomp.c (init_word_char): Don't assume that the types
+uint64_t and uint32_t exist.  Adapted from Gnulib patch
+2012-05-27T06:40:00!eggert@cs.ucla.edu.  See:
+https://git.savannah.gnu.org/cgit/gnulib.git/commit/?id=252b52457da7887667c036d18cc5169777615bb0
+---
+ ChangeLog       | 16 ++++++++++++++++
+ posix/regcomp.c | 29 +++++++++++++++--------------
+ 2 files changed, 31 insertions(+), 14 deletions(-)
+
+diff --git a/posix/regcomp.c b/posix/regcomp.c
+index 871ae2ffab..520596b51b 100644
+--- a/posix/regcomp.c
++++ b/posix/regcomp.c
+@@ -925,26 +925,26 @@ init_word_char (re_dfa_t *dfa)
+   int ch = 0;
+   if (BE (dfa->map_notascii == 0, 1))
+     {
+-      if (sizeof (dfa->word_char[0]) == 8)
+-	{
+-          /* The extra temporaries here avoid "implicitly truncated"
+-             warnings in the case when this is dead code, i.e. 32-bit.  */
+-          const uint64_t wc0 = UINT64_C (0x03ff000000000000);
+-          const uint64_t wc1 = UINT64_C (0x07fffffe87fffffe);
+-	  dfa->word_char[0] = wc0;
+-	  dfa->word_char[1] = wc1;
++      bitset_word_t bits0 = 0x00000000;
++      bitset_word_t bits1 = 0x03ff0000;
++      bitset_word_t bits2 = 0x87fffffe;
++      bitset_word_t bits3 = 0x07fffffe;
++      if (BITSET_WORD_BITS == 64)
++	{
++	  dfa->word_char[0] = bits1 << 31 << 1 | bits0;
++	  dfa->word_char[1] = bits3 << 31 << 1 | bits2;
+ 	  i = 2;
+ 	}
+-      else if (sizeof (dfa->word_char[0]) == 4)
++      else if (BITSET_WORD_BITS == 32)
+ 	{
+-	  dfa->word_char[0] = UINT32_C (0x00000000);
+-	  dfa->word_char[1] = UINT32_C (0x03ff0000);
+-	  dfa->word_char[2] = UINT32_C (0x87fffffe);
+-	  dfa->word_char[3] = UINT32_C (0x07fffffe);
++	  dfa->word_char[0] = bits0;
++	  dfa->word_char[1] = bits1;
++	  dfa->word_char[2] = bits2;
++	  dfa->word_char[3] = bits3;
+ 	  i = 4;
+ 	}
+       else
+-	abort ();
++        goto general_case;
+       ch = 128;
+ 
+       if (BE (dfa->is_utf8, 1))
+@@ -954,6 +954,7 @@ init_word_char (re_dfa_t *dfa)
+ 	}
+     }
+ 
++ general_case:
+   for (; i < BITSET_WORDS; ++i)
+     for (int j = 0; j < BITSET_WORD_BITS; ++j, ++ch)
+       if (isalnum (ch) || ch == '_')
+-- 
+2.47.1
+

@@ -1,0 +1,66 @@
+From: Backport of upstream glibc fix (commit 2d7ed98 adapted for 2.23)
+Subject: [PATCH] Makerules, Makeconfig, elf/rtld-Rules: fix MAKEFLAGS for GNU make >= 4.4
+
+GNU make 4.4 changed MAKEFLAGS so that long options (e.g. --jobserver-auth,
+--shuffle, --jobserver-style=fifo) are now included in that variable during
+makefile parsing.  This breaks two things in glibc 2.23's build system:
+
+1. MAKEFLAGS := $(MAKEFLAGS)r in Makerules appends 'r' without a separator.
+   With make 4.4, MAKEFLAGS can end with a long option (e.g. --jobserver-auth=3,4),
+   making the result --jobserver-auth=3,4r -- an invalid option that causes a hang.
+
+2. $(findstring s,$(MAKEFLAGS)) to detect -s (silent) gives false positives
+   because long options like --jobserver-style=fifo:... or --shuffle contain 's'.
+
+Fix (1): add a space before the flag -- $(MAKEFLAGS) -r.
+Fix (2): inspect only $(firstword -$(MAKEFLAGS)).  Prepending '-' ensures
+   there is always a first word; that word is the leading cluster of short
+   options (e.g. -rs).  Long options always follow whitespace and are therefore
+   never in the first word.
+
+Equivalent to the fix applied upstream for glibc >= 2.27 in commit 2d7ed98
+("Makerules: fix MAKEFLAGS assignment for upcoming make-4.4") and backported
+for older glibc in crosstool-ng PR #1861.
+
+--- a/Makeconfig
++++ b/Makeconfig
+@@ -801,7 +801,7 @@
+ # umpteen zillion filenames along with it (we use `...' instead)
+ # but we don't want this echoing done when the user has said
+ # he doesn't want to see commands echoed by using -s.
+-ifneq	"$(findstring s,$(MAKEFLAGS))" ""	# if -s
++ifneq	"$(findstring s,$(firstword -$(MAKEFLAGS)))" ""	# if -s
+ +cmdecho	:= echo >/dev/null
+ else						# not -s
+ +cmdecho	:= echo
+--- a/Makerules
++++ b/Makerules
+@@ -778,7 +778,7 @@
+ # Maximize efficiency by minimizing the number of rules.
+ .SUFFIXES:	# Clear the suffix list.  We don't use suffix rules.
+ # Don't define any builtin rules.
+-MAKEFLAGS := $(MAKEFLAGS)r
++MAKEFLAGS := $(MAKEFLAGS) -r
+ 
+ # Generic rule for making directories.
+ %/:
+@@ -795,7 +795,7 @@
+ .PRECIOUS: $(foreach l,$(libtypes),$(patsubst %,$(common-objpfx)$l,c))
+ 
+ # Use the verbose option of ar and tar when not running silently.
+-ifeq	"$(findstring s,$(MAKEFLAGS))" ""	# if not -s
++ifeq	"$(findstring s,$(firstword -$(MAKEFLAGS)))" ""	# if not -s
+ verbose := v
+ else	   					# -s
+ verbose	:=
+--- a/elf/rtld-Rules
++++ b/elf/rtld-Rules
+@@ -52,7 +52,7 @@
+ 	mv -f $@T $@
+ 
+ # Use the verbose option of ar and tar when not running silently.
+-ifeq	"$(findstring s,$(MAKEFLAGS))" ""	# if not -s
++ifeq	"$(findstring s,$(firstword -$(MAKEFLAGS)))" ""	# if not -s
+ verbose := v
+ else						# -s
+ verbose	:=

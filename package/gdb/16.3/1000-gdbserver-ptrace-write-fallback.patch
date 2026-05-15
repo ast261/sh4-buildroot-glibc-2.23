@@ -1,0 +1,88 @@
+From: idl4k toolchain
+Subject: [PATCH] gdbserver: fall back to PTRACE_POKETEXT when /proc/PID/mem write fails
+
+Modern gdbserver uses /proc/PID/mem (O_RDWR) exclusively for inferior
+memory writes.  On Linux < 3.2, pwrite64() into read-only text pages via
+/proc/PID/mem fails (EPERM / EIO), making it impossible to insert software
+breakpoints.  The STx7108 target runs a 2.6.32 kernel.
+
+Add ptrace_write_memory() using PTRACE_PEEKTEXT/POKETEXT and call it as a
+fallback when proc_xfer_memory() fails.  ptrace has always been able to
+write to read-only text pages; that is its primary use case for debuggers.
+
+diff --git a/gdbserver/linux-low.cc b/gdbserver/linux-low.cc
+--- a/gdbserver/linux-low.cc
++++ b/gdbserver/linux-low.cc
+@@ -5464,6 +5464,60 @@
+   return proc_xfer_memory (memaddr, myaddr, nullptr, len);
+ }
+
++/* Write LEN bytes from MYADDR to the inferior at MEMADDR using
++   PTRACE_PEEKTEXT / PTRACE_POKETEXT.  Used as a fallback when the
++   /proc/PID/mem approach fails (e.g. Linux < 3.2 where writes to
++   read-only text pages via /proc/PID/mem are not supported).  */
++
++static int
++ptrace_write_memory (CORE_ADDR memaddr, const gdb_byte *myaddr, int len)
++{
++  /* The X/M packet handlers select a process but not a thread, so
++     current_thread can be nullptr here (see set_desired_process /
++     switch_to_process).  Fall back to the process pid, which on Linux
++     equals the main thread's LWP id and is sufficient for ptrace
++     PEEKTEXT/POKETEXT on shared inferior memory.  */
++  pid_t pid;
++  if (current_thread != nullptr)
++    pid = current_thread->id.lwp ();
++  else if (current_process () != nullptr)
++    pid = current_process ()->pid;
++  else
++    return EIO;
++
++  CORE_ADDR addr = memaddr;
++  const gdb_byte *data = myaddr;
++  int remaining = len;
++
++  while (remaining > 0)
++    {
++      CORE_ADDR word_addr = addr & ~((CORE_ADDR) (sizeof (long) - 1));
++      int word_offset = (int) (addr - word_addr);
++      int bytes = std::min (remaining, (int) (sizeof (long) - word_offset));
++
++      errno = 0;
++      long word = ptrace (PTRACE_PEEKTEXT, pid,
++			  (PTRACE_TYPE_ARG3) (uintptr_t) word_addr, 0);
++      if (errno != 0)
++	return errno;
++
++      memcpy ((gdb_byte *) &word + word_offset, data, bytes);
++
++      errno = 0;
++      ptrace (PTRACE_POKETEXT, pid,
++	      (PTRACE_TYPE_ARG3) (uintptr_t) word_addr,
++	      (PTRACE_TYPE_ARG4) word);
++      if (errno != 0)
++	return errno;
++
++      addr += bytes;
++      data += bytes;
++      remaining -= bytes;
++    }
++
++  return 0;
++}
++
+ /* Copy LEN bytes of data from debugger memory at MYADDR to inferior's
+    memory at MEMADDR.  On failure (cannot write to the inferior)
+    returns the value of errno.  Always succeeds if LEN is zero.  */
+@@ -5490,7 +5544,10 @@
+ 			    str, (long) memaddr, current_process ()->pid);
+     }
+
+-  return proc_xfer_memory (memaddr, nullptr, myaddr, len);
++  int err = proc_xfer_memory (memaddr, nullptr, myaddr, len);
++  if (err != 0)
++    err = ptrace_write_memory (memaddr, myaddr, len);
++  return err;
+ }
+
+ void

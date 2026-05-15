@@ -1,0 +1,47 @@
+From 77500c99cfc4fc5ca5c68708c47d57788f9a35d8 Mon Sep 17 00:00:00 2001
+From: ast261 <ast3795@gmail.com>
+Date: Mon, 13 Jan 2025 21:10:11 +0100
+Subject: [PATCH] Fix build with GCC 10 when long double = double.
+
+original commit: 49348beafe9ba150c9bd48595b3f372299bddbb0
+
+    On platforms where long double has the same ABI as double, glibc
+    defines long double functions as aliases for the corresponding double
+    functions.  The declarations of those functions in <math.h> are
+    disabled to avoid problems with aliases having incompatible types, but
+    GCC 10 now gives errors for incompatible types when the long double
+    function is known to GCC as a built-in function, not just when there
+    is an incompatible header declaration.
+
+    This patch fixes those errors by using appropriate
+    -fno-builtin-<function> options to compile the double functions.  The
+    list of CFLAGS-* settings is an appropriately adapted version of that
+    in sysdeps/ieee754/ldbl-opt/Makefile used there for building nldbl-*.c
+    files; in particular, the options are used even if GCC does not
+    currently have a built-in function of a given function, so that adding
+    such a built-in function in future will not break the glibc build.
+    Thus, various of the CFLAGS-* settings are only for future-proofing
+    and may not currently be needed (and it's possible some could be
+    irrelevant for other reasons).
+---
+ math/Makefile | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/math/Makefile b/math/Makefile
+index 7d573a0074..0d15f24a55 100644
+--- a/math/Makefile
++++ b/math/Makefile
+@@ -286,6 +286,10 @@ ifneq ($(long-double-fcts),yes)
+ # defining those aliases, tell <math.h> to declare the `FUNCl' names with
+ # `double' instead of `long double'.
+ math-CPPFLAGS += -DNO_LONG_DOUBLE -D_Mlong_double_=double
++# GCC 10 diagnoses aliases with types conflicting with built-in
++# functions.
++CFLAGS-s_modf.c += -fno-builtin-modfl
++CFLAGS-s_sincos.c += -fno-builtin-sincosl
+ endif
+ 
+ # The -lieee library is actually an object file.
+-- 
+2.47.1
+

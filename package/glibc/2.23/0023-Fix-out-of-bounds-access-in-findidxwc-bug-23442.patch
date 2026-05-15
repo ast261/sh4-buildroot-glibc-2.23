@@ -1,0 +1,29 @@
+From 18ccec07e2abff40919996ca114356c4effbc0d3 Mon Sep 17 00:00:00 2001
+From: ast261 <ast3795@gmail.com>
+Date: Sun, 12 Jan 2025 16:51:33 +0100
+Subject: [PATCH] Fix out of bounds access in findidxwc (bug 23442)
+
+Autor: Andreas Schwab <schwab@suse.de>  2018-07-24 18:02:28
+
+    If usrc is a prefix of cp but one character shorter an out of bounds
+    access to usrc was done.
+---
+ locale/weightwc.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/locale/weightwc.h b/locale/weightwc.h
+index ab26482996..60d952053d 100644
+--- a/locale/weightwc.h
++++ b/locale/weightwc.h
+@@ -84,7 +84,7 @@ findidx (const int32_t *table,
+ 	    if (cp[cnt] != usrc[cnt])
+ 	      break;
+ 
+-	  if (cnt < nhere - 1)
++	  if (cnt < nhere - 1 || cnt == len)
+ 	    {
+ 	      cp += 2 * nhere;
+ 	      continue;
+-- 
+2.47.1
+

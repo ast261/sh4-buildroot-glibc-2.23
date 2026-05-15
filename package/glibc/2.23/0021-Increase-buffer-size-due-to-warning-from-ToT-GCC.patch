@@ -1,0 +1,27 @@
+From a7e3edf4f252fb72afeb8ecca946a2d8294bb577 Mon Sep 17 00:00:00 2001
+From: Steve Ellcey <sellcey@caviumnetworks.com>
+Date: Fri, 15 Dec 2017 09:08:23 -0800
+Subject: [PATCH] Increase buffer size due to warning from ToT GCC
+
+	* nscd/dbg_log.c (dbg_log): Increase msg buffer size.
+---
+ ChangeLog      | 4 ++++
+ nscd/dbg_log.c | 2 +-
+ 2 files changed, 5 insertions(+), 1 deletion(-)
+
+diff --git a/nscd/dbg_log.c b/nscd/dbg_log.c
+index d4b19acc0c..2190c16ce5 100644
+--- a/nscd/dbg_log.c
++++ b/nscd/dbg_log.c
+@@ -67,7 +67,7 @@ dbg_log (const char *fmt,...)
+       char buf[256];
+       strftime (buf, sizeof (buf), "%c", &now);
+ 
+-      char msg[512];
++      char msg[1024];
+       snprintf (msg, sizeof (msg), "%s - %d: %s%s", buf, getpid (), msg2,
+ 		msg2[strlen (msg2) - 1] == '\n' ? "" : "\n");
+       if (dbgout)
+-- 
+2.47.1
+

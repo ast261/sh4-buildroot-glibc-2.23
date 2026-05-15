@@ -1,0 +1,123 @@
+From 1f4f13bfc50f48833c75a6cbdf085da73173a9b8 Mon Sep 17 00:00:00 2001
+From: ast261 <ast3795@gmail.com>
+Date: Sun, 12 Jan 2025 16:28:42 +0100
+Subject: [PATCH] Add support for GCC 9 attribute copy.
+
+Autor: Martin Sebor <msebor@redhat.com>  2018-11-10 01:24:12
+
+    GCC 9 has gained an enhancement to help detect attribute mismatches
+    between alias declarations and their targets.  It consists of a new
+    warning, -Wattribute-alias, an enhancement to an existing warning,
+    -Wmissing-attributes, and a new attribute called copy.
+
+    The purpose of the warnings is to help identify either possible bugs
+    (an alias declared with more restrictive attributes than its target
+    promises) or optimization or diagnostic opportunities (an alias target
+    missing some attributes that it could be declared with that might
+    benefit analysis and code generation).  The purpose of the new
+    attribute is to easily apply (almost) the same set of attributes
+    to one declaration as those already present on another.
+
+    As expected (and intended) the enhancement triggers warnings for
+    many alias declarations in Glibc code.  This change, tested on
+    x86_64-linux, avoids all instances of the new warnings by making
+    use of the attribute where appropriate.  To fully benefit from
+    the enhancement Glibc will need to be compiled with
+     -Wattribute-alias=2 and remaining warnings reviewed and dealt with
+    (there are a couple of thousand but most should be straightforward
+    to deal with).
+---
+ include/libc-symbols.h | 22 ++++++++++++++++------
+ misc/sys/cdefs.h       | 10 ++++++++++
+ 2 files changed, 26 insertions(+), 6 deletions(-)
+
+diff --git a/include/libc-symbols.h b/include/libc-symbols.h
+index 4548e097dc..98bdcb9348 100644
+--- a/include/libc-symbols.h
++++ b/include/libc-symbols.h
+@@ -90,6 +90,11 @@
+ # define ASM_LINE_SEP ;
+ #endif
+ 
++#ifndef __attribute_copy__
++/* Provide an empty definition when cdefs.h is not included.  */
++# define __attribute_copy__(arg)
++#endif
++
+ #ifndef __ASSEMBLER__
+ /* GCC understands weak symbols and aliases; use its interface where
+    possible, instead of embedded assembly language.  */
+@@ -97,7 +102,8 @@
+ /* Define ALIASNAME as a strong alias for NAME.  */
+ # define strong_alias(name, aliasname) _strong_alias(name, aliasname)
+ # define _strong_alias(name, aliasname) \
+-  extern __typeof (name) aliasname __attribute__ ((alias (#name)));
++  extern __typeof (name) aliasname __attribute__ ((alias (#name))) \
++    __attribute_copy__ (name);
+ 
+ /* This comes between the return type and function name in
+    a function definition to make that definition weak.  */
+@@ -108,14 +114,16 @@
+    If weak aliases are not available, this defines a strong alias.  */
+ # define weak_alias(name, aliasname) _weak_alias (name, aliasname)
+ # define _weak_alias(name, aliasname) \
+-  extern __typeof (name) aliasname __attribute__ ((weak, alias (#name)));
+-
++  extern __typeof (name) aliasname __attribute__ ((weak, alias (#name))) \
++    __attribute_copy__ (name);
++  
+ /* Same as WEAK_ALIAS, but mark symbol as hidden.  */
+ # define weak_hidden_alias(name, aliasname) \
+   _weak_hidden_alias (name, aliasname)
+ # define _weak_hidden_alias(name, aliasname) \
+   extern __typeof (name) aliasname \
+-    __attribute__ ((weak, alias (#name), __visibility__ ("hidden")));
++    __attribute__ ((weak, alias (#name), __visibility__ ("hidden"))) \
++    __attribute_copy__ (name);
+ 
+ /* Declare SYMBOL as weak undefined symbol (resolved to 0 if not defined).  */
+ # define weak_extern(symbol) _weak_extern (weak symbol)
+@@ -406,7 +414,8 @@ for linking")
+ #  define __hidden_ver1(local, internal, name) \
+   extern __typeof (name) __EI_##name __asm__(__hidden_asmname (#internal)); \
+   extern __typeof (name) __EI_##name \
+-	__attribute__((alias (__hidden_asmname (#local))))
++    __attribute__((alias (__hidden_asmname (#local))))	\
++    __attribute_copy__ (name)
+ #  define hidden_ver(local, name)	__hidden_ver1(local, __GI_##name, name);
+ #  define hidden_data_ver(local, name)	hidden_ver(local, name)
+ #  define hidden_def(name)		__hidden_ver1(__GI_##name, name, name);
+@@ -419,7 +428,8 @@ for linking")
+ #  define __hidden_nolink1(local, internal, name, version) \
+   __hidden_nolink2 (local, internal, name, version)
+ #  define __hidden_nolink2(local, internal, name, version) \
+-  extern __typeof (name) internal __attribute__ ((alias (#local))); \
++    extern __typeof (name) internal __attribute__ ((alias (#local)))	\
++    __attribute_copy__ (name);						\
+   __hidden_nolink3 (local, internal, #name "@" #version)
+ #  define __hidden_nolink3(local, internal, vername) \
+   __asm__ (".symver " #internal ", " vername);
+diff --git a/misc/sys/cdefs.h b/misc/sys/cdefs.h
+index 7fd41549db..47e0ed42b1 100644
+--- a/misc/sys/cdefs.h
++++ b/misc/sys/cdefs.h
+@@ -407,6 +407,16 @@
+       [!!sizeof (struct { int __error_if_negative: (expr) ? 2 : -1; })]
+ #endif
+ 
++/* Undefine (also defined in libc-symbols.h).  */
++#undef __attribute_copy__
++#if __GNUC_PREREQ (9, 0)
++/* Copies attributes from the declaration or type referenced by
++   the argument.  */
++# define __attribute_copy__(arg) __attribute__ ((__copy__ (arg)))
++#else
++# define __attribute_copy__(arg)
++#endif
++
+ #include <bits/wordsize.h>
+ 
+ #if defined __LONG_DOUBLE_MATH_OPTIONAL && defined __NO_LONG_DOUBLE_MATH
+-- 
+2.47.1
+

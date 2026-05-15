@@ -1,0 +1,78 @@
+From c5077240442b1541b5c7e8ad540979668042fec3 Mon Sep 17 00:00:00 2001
+From: ast261 <ast3795@gmail.com>
+Date: Mon, 13 Jan 2025 21:49:47 +0100
+Subject: [PATCH] Properly initialize audit cookie for the dynamic loader [BZ
+ #25157]
+
+original commit: c7bf5ceab6ec776ac7350d3b0190776bf532ac54
+The l_audit array is indexed by audit module, not audit function.
+
+Introduce link_map_audit_state accessor function
+
+original commit: e1d559f337de2c8ab68a6749dfe873477c883807
+
+    To improve GCC 10 compatibility, it is necessary to remove the l_audit
+    zero-length array from the end of struct link_map.  In preparation of
+    that, this commit introduces an accessor function for the audit state,
+    so that it is possible to change the representation of the audit state
+    without adjusting the code that accesses it.
+---
+ elf/rtld.c                 | 15 +++++++--------
+ sysdeps/generic/ldsodefs.h |  8 ++++++++
+ 2 files changed, 15 insertions(+), 8 deletions(-)
+
+diff --git a/elf/rtld.c b/elf/rtld.c
+index 647661ca45..2c1e75d570 100644
+--- a/elf/rtld.c
++++ b/elf/rtld.c
+@@ -1354,14 +1354,7 @@ ERROR: ld.so: object '%s' cannot be loaded as audit interface: %s; ignored.\n",
+ 
+ 		      /* Store the pointer.  */
+ 		      if (err_str == NULL && largs.result != NULL)
+-			{
+-			  newp->fptr[cnt] = largs.result;
+-
+-			  /* The dynamic linker link map is statically
+-			     allocated, initialize the data now.   */
+-			  GL(dl_rtld_map).l_audit[cnt].cookie
+-			    = (intptr_t) &GL(dl_rtld_map);
+-			}
++                        newp->fptr[cnt] = largs.result;
+ 		      else
+ 			newp->fptr[cnt] = NULL;
+ 		      ++cnt;
+@@ -1377,6 +1370,12 @@ ERROR: ld.so: object '%s' cannot be loaded as audit interface: %s; ignored.\n",
+ 		    last_audit = GLRO(dl_audit) = &newp->ifaces;
+ 		  else
+ 		    last_audit = last_audit->next = &newp->ifaces;
++                  
++                  /* The dynamic linker link map is statically allocated, so the
++                     cookie in _dl_new_object has not happened.  */
++                  link_map_audit_state (&GL (dl_rtld_map), GLRO (dl_naudit))->cookie
++                    = (intptr_t) &GL (dl_rtld_map);
++
+ 		  ++GLRO(dl_naudit);
+ 
+ 		  /* Mark the DSO as being used for auditing.  */
+diff --git a/sysdeps/generic/ldsodefs.h b/sysdeps/generic/ldsodefs.h
+index 2733ac8268..1c7e82aea8 100644
+--- a/sysdeps/generic/ldsodefs.h
++++ b/sysdeps/generic/ldsodefs.h
+@@ -1054,6 +1054,14 @@ extern void _dl_non_dynamic_init (void) internal_function;
+ /* Used by static binaries to check the auxiliary vector.  */
+ extern void _dl_aux_init (ElfW(auxv_t) *av) internal_function;
+ 
++#ifdef SHARED
++static inline struct auditstate *
++link_map_audit_state (struct link_map *l, size_t index)
++{
++  return &l->l_audit[index];
++}
++#endif /* SHARED */
++
+ 
+ __END_DECLS
+ 
+-- 
+2.47.1
+

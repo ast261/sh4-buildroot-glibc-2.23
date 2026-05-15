@@ -1,0 +1,29 @@
+From e69897bf202e18034cbef26f363bae64de70a196 Mon Sep 17 00:00:00 2001
+From: Paul Eggert <eggert@cs.ucla.edu>
+Date: Sun, 12 Nov 2017 22:00:28 -0800
+Subject: [PATCH] timezone: pacify GCC -Wstringop-truncation
+
+Problem reported by Martin Sebor in:
+https://sourceware.org/ml/libc-alpha/2017-11/msg00336.html
+* timezone/zic.c (writezone): Use memcpy, not strncpy.
+---
+ ChangeLog      | 7 +++++++
+ timezone/zic.c | 2 +-
+ 2 files changed, 8 insertions(+), 1 deletion(-)
+
+diff --git a/timezone/zic.c b/timezone/zic.c
+index 946bf6ff8e..e738386600 100644
+--- a/timezone/zic.c
++++ b/timezone/zic.c
+@@ -1949,7 +1949,7 @@ writezone(const char *const name, const char *const string, char version)
+ 		}
+ #define DO(field)	fwrite(tzh.field, sizeof tzh.field, 1, fp)
+ 		tzh = tzh0;
+-		strncpy(tzh.tzh_magic, TZ_MAGIC, sizeof tzh.tzh_magic);
++		memcpy(tzh.tzh_magic, TZ_MAGIC, sizeof tzh.tzh_magic);
+ 		tzh.tzh_version[0] = version;
+ 		convert(thistypecnt, tzh.tzh_ttisgmtcnt);
+ 		convert(thistypecnt, tzh.tzh_ttisstdcnt);
+-- 
+2.47.1
+

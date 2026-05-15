@@ -1,0 +1,24 @@
+diff --git a/gdb/regformats/regdat.sh b/gdb/regformats/regdat.sh
+--- a/gdb/regformats/regdat.sh
++++ b/gdb/regformats/regdat.sh
+@@ -200,6 +200,8 @@ cat <<EOF
+
+   init_target_desc (result, expedite_regs_${name}, ${osabi_enum});
+
++  result->arch.reset (xstrdup ("sh4"));
++  result->osabi.reset (xstrdup ("GNU/Linux"));
+   tdesc_${name} = result;
+ }
+ EOF
+diff --git a/gdbsupport/tdesc.cc b/gdbsupport/tdesc.cc
+--- a/gdbsupport/tdesc.cc
++++ b/gdbsupport/tdesc.cc
+@@ -26,7 +26,7 @@ tdesc_reg::tdesc_reg (struct tdesc_feature *feature, const std::string &name_,
+     save_restore (save_restore_),
+     group (group_ != NULL ? group_ : ""),
+     bitsize (bitsize_),
+-    type (type_ != NULL ? type_ : "<unknown>")
++    type (type_ != NULL ? type_ : "uint32")
+ {
+   /* If the register's type is target-defined, look it up now.  We may not
+      have easy access to the containing feature when we want it later.  */

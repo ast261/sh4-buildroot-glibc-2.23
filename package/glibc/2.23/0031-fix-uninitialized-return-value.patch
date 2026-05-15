@@ -1,0 +1,27 @@
+From c0906e1c79107222e3c7e7fb5b95466e8467948e Mon Sep 17 00:00:00 2001
+From: ast261 <ast3795@gmail.com>
+Date: Tue, 14 Jan 2025 18:35:27 +0100
+Subject: [PATCH] fix uninitialized return value
+
+---
+ sysdeps/ieee754/k_standard.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/sysdeps/ieee754/k_standard.c b/sysdeps/ieee754/k_standard.c
+index c8aebbff90..462946adea 100644
+--- a/sysdeps/ieee754/k_standard.c
++++ b/sysdeps/ieee754/k_standard.c
+@@ -966,7 +966,9 @@ __kernel_standard(double x, double y, int type)
+ 		  __set_errno (ERANGE);
+ 		}
+ 		break;
+-
++        default:
++          exc.retval = zero;
++          
+ 		/* #### Last used is 50/150/250 ### */
+ 	}
+ 	return exc.retval;
+-- 
+2.47.1
+

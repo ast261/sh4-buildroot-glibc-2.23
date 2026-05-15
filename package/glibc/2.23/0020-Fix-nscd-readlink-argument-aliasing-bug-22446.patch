@@ -1,0 +1,34 @@
+From 9ce5da084a686dc66dec37bb5102f0f0cebea2f9 Mon Sep 17 00:00:00 2001
+From: ast261 <ast3795@gmail.com>
+Date: Fri, 10 Jan 2025 19:09:44 +0100
+Subject: [PATCH] Fix nscd readlink argument aliasing (bug 22446).
+
+---
+ nscd/connections.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/nscd/connections.c b/nscd/connections.c
+index f3b16f7246..2e747544b4 100644
+--- a/nscd/connections.c
++++ b/nscd/connections.c
+@@ -1106,14 +1106,15 @@ cannot handle old request version %d; current version is %d"),
+       if (debug_level > 0)
+ 	{
+ #ifdef SO_PEERCRED
++	  char pbuf[sizeof ("/proc//exe") + 3 * sizeof (long int)];
+ # ifdef PATH_MAX
+ 	  char buf[PATH_MAX];
+ # else
+ 	  char buf[4096];
+ # endif
+ 
+-	  snprintf (buf, sizeof (buf), "/proc/%ld/exe", (long int) pid);
+-	  ssize_t n = readlink (buf, buf, sizeof (buf) - 1);
++	  snprintf (pbuf, sizeof (pbuf), "/proc/%ld/exe", (long int) pid);
++	  ssize_t n = readlink (pbuf, buf, sizeof (buf) - 1);
+ 
+ 	  if (n <= 0)
+ 	    dbg_log (_("\
+-- 
+2.47.1
+
