@@ -15,6 +15,10 @@ READLINE_CONF_OPTS = \
 	--disable-install-examples \
 	--with-curses \
 	--with-shared-termcap-library
+HOST_READLINE_CONF_OPTS = \
+	--disable-install-examples \
+	--with-curses \
+	--with-shared-termcap-library=-lncursesw
 READLINE_LICENSE = GPL-3.0+
 READLINE_LICENSE_FILES = COPYING
 READLINE_CPE_ID_VENDOR = gnu
