@@ -6,7 +6,7 @@ It can currently be used under the following conditions:
 - kernel: 2.6.32.42
 - glibc: 2.23
 
-This toolchain has been tested on
+The toolchain and image has been tested on
 - platform: idl4k (Inverto Digital Labs)
 - cpu type: STx7108
 
