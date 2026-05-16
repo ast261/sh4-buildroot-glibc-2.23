@@ -466,6 +466,14 @@ define UBOOT_INSTALL_IMAGES_CMDS
 	)
 endef
 
+# mkimage is always built as a host tool during u-boot compilation; install it
+# so it is available to other packages (e.g. linux uImage target) without
+# requiring the separate host-uboot-tools package.
+define UBOOT_INSTALL_MKIMAGE_HOST
+	$(INSTALL) -m 0755 -D $(@D)/tools/mkimage $(HOST_DIR)/bin/mkimage
+endef
+UBOOT_POST_BUILD_HOOKS += UBOOT_INSTALL_MKIMAGE_HOST
+
 ifeq ($(BR2_TARGET_UBOOT_ZYNQMP),y)
 
 ifeq ($(BR2_TARGET_UBOOT_ZYNQMP_PMUFW_EMBEDDEDSW),y)

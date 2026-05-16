@@ -144,6 +144,14 @@ ifeq ($(BR2_PACKAGE_HOST_UBOOT_TOOLS),y)
 LINUX_DEPENDENCIES += host-uboot-tools
 endif
 
+# When uboot is built (without host-uboot-tools), it installs mkimage to
+# $(HOST_DIR)/bin as a post-build hook, so ensure uboot is built first.
+ifeq ($(BR2_TARGET_UBOOT),y)
+ifeq ($(BR2_PACKAGE_HOST_UBOOT_TOOLS),)
+LINUX_DEPENDENCIES += uboot
+endif
+endif
+
 ifneq ($(ARCH_XTENSA_OVERLAY_FILE),)
 define LINUX_XTENSA_OVERLAY_EXTRACT
 	$(call arch-xtensa-overlay-extract,$(@D),linux)
