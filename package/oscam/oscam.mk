@@ -1,4 +1,4 @@
-OSCAM_VERSION = 76c92a2cb745fc32341bb4f43edd221cec5471e1
+OSCAM_VERSION = 11a966f71a230b494d615b35b400f6c2fb2649da
 OSCAM_SITE = https://git.streamboard.tv/common/oscam.git
 OSCAM_SITE_METHOD = git
 
