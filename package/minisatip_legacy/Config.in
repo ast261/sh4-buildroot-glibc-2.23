@@ -1,0 +1,5 @@
+config BR2_PACKAGE_MINISATIP_LEGACY
+	bool "minisatip_legacy"
+	help
+          minisatip
+          
