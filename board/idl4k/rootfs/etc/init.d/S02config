@@ -1,0 +1,10 @@
+#!/bin/sh
+
+CONFIG=/etc/sysconfig/config
+
+if [ ! -f "$CONFIG" ]; then
+  mkdir -p "$(dirname $CONFIG)"
+  printf 'MINISATIP=/sbin/minisatip-legacy\n' > "$CONFIG"
+fi
+
+. "$CONFIG"

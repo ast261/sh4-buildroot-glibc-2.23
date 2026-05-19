@@ -1,6 +1,7 @@
 #!/bin/sh
 
-DAEMON=/sbin/minisatip-legacy
+[ -f /etc/sysconfig/config ] && . /etc/sysconfig/config
+DAEMON=${MINISATIP:-/sbin/minisatip-legacy}
 PIDFILE=/var/run/minisatip.pid
 MINISATIP_ARGS="-g -z /etc/sysconfig/minisatip"
 
