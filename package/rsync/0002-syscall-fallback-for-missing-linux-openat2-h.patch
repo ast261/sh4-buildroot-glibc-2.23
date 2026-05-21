@@ -1,0 +1,46 @@
+From b0f2a1e000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: axel <axel@anonymous>
+Date: Thu, 21 May 2026 00:00:00 +0000
+Subject: [PATCH] syscall.c: fallback definitions when linux/openat2.h is absent
+
+linux/openat2.h was introduced in kernel 5.6.  When building against
+older kernel headers (e.g. 2.6.32) the unconditional include fails.
+
+Guard the include with __has_include and supply the minimal struct and
+macro definitions needed to compile secure_relative_open_linux().  At
+runtime the openat2 syscall returns ENOSYS on pre-5.6 kernels and the
+existing fallback path is taken, so behaviour is unchanged.
+
+Signed-off-by: axel <axel@anonymous>
+---
+ syscall.c | 16 +++++++++++++++-
+ 1 file changed, 15 insertions(+), 1 deletion(-)
+
+diff --git a/syscall.c b/syscall.c
+index 1111111..2222222 100644
+--- a/syscall.c
++++ b/syscall.c
+@@ -35,7 +35,22 @@
+
+ #ifdef __linux__
+ #include <sys/syscall.h>
+-#include <linux/openat2.h>
++#if __has_include(<linux/openat2.h>)
++# include <linux/openat2.h>
++#else
++/* Fallback for kernel headers older than 5.6 that lack openat2 */
++# include <linux/types.h>
++struct open_how {
++	__u64 flags;
++	__u64 mode;
++	__u64 resolve;
++};
++# define RESOLVE_NO_MAGICLINKS	(1ULL << 2)
++# define RESOLVE_BENEATH	(1ULL << 3)
++# ifndef SYS_openat2
++#  define SYS_openat2		(-1L) /* unavailable; syscall returns ENOSYS */
++# endif
++#endif
+ #endif
+
+ #include "ifuncs.h"
