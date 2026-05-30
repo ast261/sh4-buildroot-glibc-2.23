@@ -21,7 +21,7 @@ insmod $MODULE_PATH/axe/axe_dmx.ko
 # Inverto demux-ts driver
 insmod $MODULE_PATH/axe/axe_dmxts.ko
 
-# stapi init
+# stapi daemon
 source /root/load_env.sh
 cd /root
 export AXE_API_TYPE=linuxdvb

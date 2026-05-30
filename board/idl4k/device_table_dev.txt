@@ -14,7 +14,7 @@
 /dev/input	d	755	0	0	-	-	-	-	-
 
 # stapi
-/dev/stapi                     d	755	0	0	-	-	-	-	-
+/dev/stapi                     d       755	0	0	-	-	-	-	-
 /dev/stapi/stpti5_ioctl        c       644	0	0	236	0	-	-	-
 /dev/stapi/stsys_ioctl         c       644	0	0	237	0	-	-	-
 /dev/stapi/stnet_ioctl         c       644	0	0	238	0	-	-	-
