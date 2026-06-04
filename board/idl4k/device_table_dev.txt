@@ -32,14 +32,10 @@
 
 # axe
 /dev/axe                       d       755	0	0	-	-	-	-	-
-/dev/axe/demuxts-0             c       644	0	0	231	1	-	-	-
-/dev/axe/demuxts-1             c       644	0	0	231	0	-	-	-
-/dev/axe/demuxts-2             c       644	0	0	231	3	-	-	-
-/dev/axe/demuxts-3             c       644	0	0	231	2	-	-	-
-/dev/axe/demux-0               c       644	0	0	232	1	-	-	-
-/dev/axe/demux-1               c       644	0	0	232	0	-	-	-
-/dev/axe/demux-2               c       644	0	0	232	3	-	-	-
-/dev/axe/demux-3               c       644	0	0	232	2	-	-	-
+/dev/axe/demuxts-0             c       644	0	0	232	1	-	-	-
+/dev/axe/demuxts-1             c       644	0	0	232	0	-	-	-
+/dev/axe/demuxts-2             c       644	0	0	232	3	-	-	-
+/dev/axe/demuxts-3             c       644	0	0	232	2	-	-	-
 /dev/axe/fp-0                  c       644	0	0	233	0	-	-	-
 /dev/axe/frontend-0            c       644	0	0	234	0	-	-	-
 /dev/axe/frontend-1            c       644	0	0	234	1	-	-	-

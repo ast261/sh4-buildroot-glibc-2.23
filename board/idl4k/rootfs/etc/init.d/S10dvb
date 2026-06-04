@@ -15,9 +15,6 @@ insmod $MODULE_PATH/axe/axe_fe.ko
 # Inverto fp-s2i driver
 insmod $MODULE_PATH/axe/axe_fp.ko
 
-# Inverto demux driver
-insmod $MODULE_PATH/axe/axe_dmx.ko
-
 # Inverto demux-ts driver
 insmod $MODULE_PATH/axe/axe_dmxts.ko
 
