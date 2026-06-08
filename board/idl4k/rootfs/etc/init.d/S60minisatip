@@ -3,7 +3,7 @@
 [ -f /etc/sysconfig/config ] && . /etc/sysconfig/config
 DAEMON=${MINISATIP:-/sbin/minisatip-legacy}
 PIDFILE=/var/run/minisatip.pid
-MINISATIP_ARGS="-g -z /etc/sysconfig/minisatip"
+MINISATIP_ARGS="-g -z /etc/sysconfig/minisatip -p http://192.168.178.60/playlist.m3u"
 
 if test -r /etc/sysconfig/oscam/oscam.server; then
   MINISATIP_ARGS="$MINISATIP_ARGS --dvbapi 127.0.0.1:9000"
